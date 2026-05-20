@@ -1,0 +1,52 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f7f6;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+.container {
+    width: 80%;
+    max-width: 1000px;
+    margin-top: 50px;
+}
+.header {
+    background-color: #004d99; 
+    color: white;
+    padding: 20px;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.paciente-info {
+    background-color: white;
+    padding: 20px;
+    border-bottom: 2px solid #eee;
+}
+.dashboard {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    padding: 20px 0;
+}
+.card {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    text-align: center;
+}
+.card h3 {
+    margin-top: 0;
+    color: #555;
+    font-size: 16px;
+}
+.valor {
+    font-size: 36px;
+    font-weight: bold;
+    color: #333;
+}
+.alerta-verde { color: #00995D; }
+.loading { text-align: center; margin-top: 50px; font-size: 20px; color: #666; }
