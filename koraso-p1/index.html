@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>- Korasõ -</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container" id="app">
+        <div class="loading" id="mensagem-carregando">Sincronizando dados com o servidor Korasõ...</div>
+        
+        <div id="painel-medico" style="display: none;">
+            <div class="header">
+                <h2>🫀 Korasõ | Smart Report</h2>
+                <span>ID Consulta: #12345</span>
+            </div>
+            
+            <div class="paciente-info">
+                <h1 id="nome-paciente">Carregando Nome...</h1>
+                <p>Status: <strong class="alerta-verde">Dados Sincronizados com Sucesso</strong></p>
+                <small>Última atualização: <span id="data-hora"></span></small>
+            </div>
+
+            <div class="dashboard">
+                <div class="card">
+                    <h3>BPM de Repouso</h3>
+                    <div class="valor" id="bpm-valor">--</div>
+                    <p>bpm</p>
+                </div>
+                <div class="card">
+                    <h3>Passos (Média Diária)</h3>
+                    <div class="valor" id="passos-valor">--</div>
+                    <p>passos</p>
+                </div>
+                <div class="card">
+                    <h3>Horas de Sono</h3>
+                    <div class="valor" id="sono-valor">--</div>
+                    <p>horas</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+
+/* Script que consome a API Dinâmica */
+
+// 1. Pegam o ID da barra de endereços (ex: ?id=777)
+const parametrosUrl = new URLSearchParams(window.location.search);
+// Se não tiver ID na URL, usam o 12345 como padrão para não quebrar a tela
+const pacienteId = parametrosUrl.get('id') || '12345'; 
+
+async function carregarDadosPaciente(){
+    try {
+        // 2. Injetamos a variável pacienteId na URL da nossa API
+        const resposta = await fetch(`http://localhost:3000/api/medico/paciente/${pacienteId}`);
+
+        if (!resposta.ok) {
+            throw new Error('Paciente não encontrado');
+        }
+
+        const respostaCompleta = await resposta.json();
+        const paciente = respostaCompleta.dados;
+
+        // Esconde as mensagens de carregando e mostra o painel médico
+        document.getElementById('mensagem-carregando').style.display = 'none';
+        document.getElementById('painel-medico').style.display = 'block';
+
+        // 3. Otimização visual: Atualiza o cabeçalho com o ID real
+        document.querySelector('.header span').innerText = `ID Consulta: #${pacienteId}`;
+
+        // Injetando os dados
+        document.getElementById('nome-paciente').innerText = `Paciente: ${paciente.nome}`;
+        document.getElementById('bpm-valor').innerText = paciente.bpm_repouso;
+        document.getElementById('passos-valor').innerText = paciente.passos_diarios;
+        document.getElementById('sono-valor').innerText = paciente.horas_sono;
+
+        const dataFormatada = new Date(paciente.data_sincronizacao || Date.now()).toLocaleDateString('pt-BR', {
+            day: '2-digit', month: '2-digit', year: 'numeric',
+            hour: '2-digit', minute: '2-digit'
+        });
+        document.getElementById('data-hora').innerText = dataFormatada;
+
+        // Validador de cor
+        if (paciente.bpm_repouso > 90){
+            document.getElementById('bpm-valor').style.color = 'red';
+        } else {
+            document.getElementById('bpm-valor').style.color = '#00995D'; 
+        }
+
+    } catch (error) {
+        console.error('Erro:', error);
+        document.getElementById('mensagem-carregando').innerText = 'Aguardando sincronização do smartwatch deste paciente...';
+        document.getElementById('mensagem-carregando').style.color = '#5F6C7B';
+    }
+}
+
+carregarDadosPaciente();
+
+</script>
+
+</body>
+</html>
