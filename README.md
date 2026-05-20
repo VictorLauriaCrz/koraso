@@ -20,6 +20,8 @@ Atualmente, o projeto possui uma API funcional que simula o recebimento dos dado
 ### 🛠️ Tecnologias Utilizadas
 * **Back-end:** Node.js com Express.js e CORS.
 * **Front-end Web (Painel do Médico):** HTML5, CSS3 e Vanilla JavaScript (Fetch API).
+
+**Atualizações futuras**
 * **Simulação Mobile:** Postman (Testes de integração de API).
 * **Integrações Futuras:** Google Fit API / Apple HealthKit via React Native/Flutter.
 
