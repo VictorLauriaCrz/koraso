@@ -54,9 +54,8 @@ async function carregarDadosPaciente(){
             throw new Error('Erro ao buscar dados do paciente');
         }
 
-        // AQUI ESTÁ O PULO DO GATO!
         const respostaCompleta = await resposta.json();
-        const paciente = respostaCompleta.dados; // Entramos na "gaveta" certa!
+        const paciente = respostaCompleta.dados;
 
         // Esconde as mensagens de carregando e mostra o painel médico
         document.getElementById('mensagem-carregando').style.display = 'none';
@@ -68,7 +67,7 @@ async function carregarDadosPaciente(){
         document.getElementById('passos-valor').innerText = paciente.passos_diarios;
         document.getElementById('sono-valor').innerText = paciente.horas_sono;
 
-        // Formata a data (UX impecável)
+        // Formata a data (UX designer ne pae)
         const dataFormatada = new Date(paciente.data_sincronizacao).toLocaleDateString('pt-BR', {
             day: '2-digit',
             month: '2-digit',
@@ -82,7 +81,7 @@ async function carregarDadosPaciente(){
         if (paciente.bpm_repouso > 90){
             document.getElementById('bpm-valor').style.color = 'red';
         } else {
-            document.getElementById('bpm-valor').style.color = '#00995D'; // Verde Unimed
+            document.getElementById('bpm-valor').style.color = '#00995D'; // Verde Unimed ( podemos mudar depois com a nossa identidade)
         }
 
     } catch (error) {
