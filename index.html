@@ -44,14 +44,20 @@
 
 <script>
 
-/* Script que consome a API */
+/* Script que consome a API Dinâmica */
+
+// 1. Pegam o ID da barra de endereços (ex: ?id=777)
+const parametrosUrl = new URLSearchParams(window.location.search);
+// Se não tiver ID na URL, usam o 12345 como padrão para não quebrar a tela
+const pacienteId = parametrosUrl.get('id') || '12345'; 
 
 async function carregarDadosPaciente(){
     try {
-        const resposta = await fetch('http://localhost:3000/api/medico/paciente/12345');
+        // 2. Injetamos a variável pacienteId na URL da nossa API
+        const resposta = await fetch(`http://localhost:3000/api/medico/paciente/${pacienteId}`);
 
         if (!resposta.ok) {
-            throw new Error('Erro ao buscar dados do paciente');
+            throw new Error('Paciente não encontrado');
         }
 
         const respostaCompleta = await resposta.json();
@@ -61,33 +67,32 @@ async function carregarDadosPaciente(){
         document.getElementById('mensagem-carregando').style.display = 'none';
         document.getElementById('painel-medico').style.display = 'block';
 
-        // Injetando os dados usando a variável 'paciente'
+        // 3. Otimização visual: Atualiza o cabeçalho com o ID real
+        document.querySelector('.header span').innerText = `ID Consulta: #${pacienteId}`;
+
+        // Injetando os dados
         document.getElementById('nome-paciente').innerText = `Paciente: ${paciente.nome}`;
         document.getElementById('bpm-valor').innerText = paciente.bpm_repouso;
         document.getElementById('passos-valor').innerText = paciente.passos_diarios;
         document.getElementById('sono-valor').innerText = paciente.horas_sono;
 
-        // Formata a data (UX designer ne pae)
-        const dataFormatada = new Date(paciente.data_sincronizacao).toLocaleDateString('pt-BR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
+        const dataFormatada = new Date(paciente.data_sincronizacao || Date.now()).toLocaleDateString('pt-BR', {
+            day: '2-digit', month: '2-digit', year: 'numeric',
+            hour: '2-digit', minute: '2-digit'
         });
         document.getElementById('data-hora').innerText = dataFormatada;
 
-        // Validador de frequência cardíaca
+        // Validador de cor
         if (paciente.bpm_repouso > 90){
             document.getElementById('bpm-valor').style.color = 'red';
         } else {
-            document.getElementById('bpm-valor').style.color = '#00995D'; // Verde Unimed ( podemos mudar depois com a nossa identidade)
+            document.getElementById('bpm-valor').style.color = '#00995D'; 
         }
 
     } catch (error) {
         console.error('Erro:', error);
-        document.getElementById('mensagem-carregando').innerText = 'Erro ao carregar dados do paciente.';
-        document.getElementById('mensagem-carregando').style.color = 'red';
+        document.getElementById('mensagem-carregando').innerText = 'Aguardando sincronização do smartwatch deste paciente...';
+        document.getElementById('mensagem-carregando').style.color = '#5F6C7B';
     }
 }
 

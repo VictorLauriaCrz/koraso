@@ -3,18 +3,17 @@ const cors = require('cors');
 
 const app = express();
 
-//segurança ne rpzd!!
-
+// segurança ne rpzd!!
 app.use(cors());
 app.use(express.json()); // pra api entender dado de json
 
-//algum dia havera um banco de dados de vdd pro teste, mas por enquanto, vamos usar um array pra guardar os dados
-
-const databaseKoraso = [];
+// Transformei o Array [] em um Objeto {} para usar o ID como chave única.
+// Isso impede dados duplicados do mesmo paciente e mantém a versão mais recente!
+const databaseKoraso = {};
 
 app.post('/api/sincronizar', (req, res) => {
 
-    const { paciente_id, nome, bpm_repouso, passos_diarios, horas_sono, } = req.body; 
+    const { paciente_id, nome, bpm_repouso, passos_diarios, horas_sono } = req.body; 
 
     if (!paciente_id || !nome || !bpm_repouso || !passos_diarios || !horas_sono) {
         return res.status(400).json({ error: 'Todos os campos são obrigatórios.' });
@@ -29,18 +28,20 @@ app.post('/api/sincronizar', (req, res) => {
         data_sincronizacao: new Date().toISOString(),
     };
 
-    
-    databaseKoraso.push(novoRelatorio);
+    // Salva ou atualiza os dados usando o ID como etiqueta
+    databaseKoraso[paciente_id] = novoRelatorio;
 
     return res.status(201).json({ 
         message: 'Dados sincronizados com sucesso.', 
-        dados: novoRelatorio });
+        dados: novoRelatorio 
+    });
 });
 
 app.get('/api/medico/paciente/:id', (req, res) => {
     const idBuscado = req.params.id;
 
-    const relatorio = databaseKoraso.find(dado => dado.paciente_id === idBuscado);
+    // Em vez de .find(), nós vamos direto na "etiqueta" certa.
+    const relatorio = databaseKoraso[idBuscado];
 
     if (!relatorio) {
         return res.status(404).json({ error: 'Paciente não encontrado.' });

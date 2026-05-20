@@ -1,52 +1,146 @@
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f4f7f6;
+/* Importando a fonte Inter do Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+/* 1. VARIÁVEIS DE COR (A Paleta Atlassian Minimalista) */
+:root {
+    --azul-atlassian: #0052CC;
+    --azul-marinho: #172B4D; /* Para textos fortes */
+    --cinza-fundo: #F4F5F7; /* Fundo limpo que descansa os olhos */
+    --branco: #FFFFFF;
+    --verde-sucesso: #36B37E;
+    --vermelho-alerta: #FF5630;
+    --cinza-texto: #5E6C84;
+}
+
+/* 2. RESET BÁSICO */
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background-color: var(--cinza-fundo);
+    color: var(--azul-marinho);
     display: flex;
     justify-content: center;
+    padding: 40px 20px;
 }
+
 .container {
-    width: 80%;
-    max-width: 1000px;
+    width: 100%;
+    max-width: 1000px; /* Limita a largura para não esticar demais em telas grandes */
+}
+
+/* 3. MENSAGEM DE CARREGAMENTO ANIMADA */
+.loading {
+    text-align: center;
+    font-size: 1.2rem;
+    color: var(--azul-atlassian);
+    font-weight: 600;
+    animation: pulse 1.5s infinite; /* Faz o texto pulsar */
     margin-top: 50px;
 }
+
+@keyframes pulse {
+    0% { opacity: 0.5; }
+    50% { opacity: 1; }
+    100% { opacity: 0.5; }
+}
+
+/* 4. CABEÇALHO DA PLATAFORMA */
 .header {
-    background-color: #004d99; 
-    color: white;
-    padding: 20px;
-    border-radius: 8px 8px 0 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #DFE1E6;
+    padding-bottom: 15px;
 }
+
+.header h2 {
+    color: var(--azul-atlassian);
+    font-weight: 700;
+}
+
+.header span {
+    background-color: #DFE1E6;
+    color: var(--azul-marinho);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* 5. BLOCO DE INFORMAÇÕES DO PACIENTE */
 .paciente-info {
-    background-color: white;
-    padding: 20px;
-    border-bottom: 2px solid #eee;
+    background-color: var(--branco);
+    padding: 25px 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(9, 30, 66, 0.04);
+    margin-bottom: 30px;
 }
+
+.paciente-info h1 {
+    font-size: 1.8rem;
+    margin-bottom: 12px;
+}
+
+.alerta-verde {
+    color: var(--verde-sucesso);
+    background-color: #E3FCEF;
+    padding: 4px 10px;
+    border-radius: 6px;
+}
+
+.paciente-info small {
+    display: block;
+    margin-top: 15px;
+    color: var(--cinza-texto);
+    font-weight: 600;
+}
+
+/* 6. GRID DOS CARDS DE SAÚDE */
 .dashboard {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    padding: 20px 0;
+    /* Essa linha mágica cria colunas automáticas baseadas no tamanho da tela */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+    gap: 25px;
 }
+
 .card {
-    background-color: white;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    background-color: var(--branco);
+    padding: 35px 20px;
+    border-radius: 12px;
     text-align: center;
+    box-shadow: 0 4px 10px rgba(9, 30, 66, 0.04);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
+
+/* Efeito de flutuar ao passar o mouse */
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(9, 30, 66, 0.08);
+}
+
 .card h3 {
-    margin-top: 0;
-    color: #555;
-    font-size: 16px;
+    font-size: 1rem;
+    color: var(--cinza-texto);
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
-.valor {
-    font-size: 36px;
-    font-weight: bold;
-    color: #333;
+
+.card .valor {
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: var(--azul-marinho);
+    margin-bottom: 5px;
 }
-.alerta-verde { color: #00995D; }
-.loading { text-align: center; margin-top: 50px; font-size: 20px; color: #666; }
+
+.card p {
+    color: var(--cinza-texto);
+    font-weight: 600;
+    font-size: 1.1rem;
+}
