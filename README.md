@@ -24,3 +24,17 @@ Atualmente, o projeto possui uma API funcional que simula o recebimento dos dado
 * **Integrações Futuras:** Google Fit API / Apple HealthKit via React Native/Flutter.
 
 ---
+
+## 👥 Integrantes 
+
+Este projeto foi desenvolvido pela equipe:
+
+* **Victor Lauria** - *Product Owner (PO), Fullstack Developer & Visual Co-Designer* *(Responsável pela concepção da solução, desenvolvimento técnico da API/Front-end e co-criação da identidade visual/logo)*
+
+* **Rodrigo Farias Lima** - *Business Analyst / Estrategista de Negócios* *(Responsável pela definição do problema, análise de valor e impacto de negócios)*
+
+* **Júlia Leal Benevides Gomes** - *Data & Research Analyst* *(Responsável pelo levantamento de dados, estatísticas e validação do impacto da hiperpersonalização)*
+
+* **Giovanna Rodrigues Pereira** - *Project Manager & Market Analyst* *(Responsável pelo Benchmarking de mercado e estruturação do Roadmap Ágil/Sprints)*
+
+* **Yannie Yshin Kang** - *Brand & UX/UI Designer / Pitch Presentation* *(Responsável pela criação da identidade visual, logo, comunicação visual do painel e estruturação do Pitch Deck)*
