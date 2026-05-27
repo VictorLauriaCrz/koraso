@@ -24,18 +24,14 @@ Atualmente, o projeto possui uma API funcional que simula o recebimento dos dado
 
 O projeto foi reestruturado seguindo o modelo de arquitetura baseada em APIs, separando completamente as regras de negócio (Back-end) das interfaces de interação (Front-end).
 
-* **Back-end (API Rest):** *
-* **Node.js** com **Express.js** para criação e roteamento da API.
+* **⚙️ Back-end (API Rest):**
+  * **Node.js** com **Express.js** para criação e roteamento da API.
+  * **CORS** para liberação de requisições de múltiplas origens de forma segura.
+  * **PDFKit** para a geração automatizada e dinâmica do *Smart Report* clínico em formato PDF.
 
-* **CORS** para liberação de requisições de múltiplas origens de forma segura.
-* **PDFKit** para a geração automatizada e dinâmica do *Smart Report* clínico em formato PDF.
-
-
-* **Front-end (Arquitetura Multitelas):**
-
-* **Dashboard do Médico:** HTML5, CSS3 e Vanilla JavaScript (Fetch API) estruturado para análise de dados, validação de alertas críticos de BPM e emissão de relatórios.
- 
-* **Simulador do App do Paciente:** Interface mobile-first (HTML/CSS) criada para simular a coleta passiva de dados (*Patient Generated Health Data*) via **Google Health API / Health Connect**.
+* **💻 Front-end (Arquitetura Multitelas):**
+  * **Dashboard do Médico:** HTML5, CSS3 e Vanilla JavaScript (Fetch API) estruturado para análise de dados, validação de alertas críticos de BPM e emissão de relatórios.
+  * **Simulador do App do Paciente:** Interface mobile-first (HTML/CSS) criada para simular a coleta passiva de dados (*Patient Generated Health Data*) via **Google Health API / Health Connect**.
  
 ---
 
