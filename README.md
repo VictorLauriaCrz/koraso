@@ -15,15 +15,34 @@ Quando o paciente agenda uma consulta, o Korasõ gera um **Smart Report** (Resum
 ---
 
 ## 🚀 Status do MVP
-Atualmente, o projeto possui uma API funcional que simula o recebimento dos dados do smartwatch (POST) e uma interface Web para o médico visualizar os gráficos do paciente em tempo real (GET).
+Atualmente, o projeto possui uma API funcional que simula o recebimento dos dados do smartwatch (POST) e uma interface Web para o médico visualizar os gráficos do paciente em tempo real (GET). A pagina app-paciente simula o envio de dados para a pagina index que exibe o dashboard para o médico.
 
-### 🛠️ Tecnologias Utilizadas
-* **Back-end:** Node.js com Express.js e CORS.
-* **Front-end Web (Painel do Médico):** HTML5, CSS3 e Vanilla JavaScript (Fetch API).
+* **Simulação Mobile:** Postman (Testes de integração de API) : Atualmente a simulação mobile envia dados da página app, inseridos no servidor, diretamente para a página index onde simula um relatório médico.
+
+
+### 🛠️ Tecnologias Utilizadas e Arquitetura
+
+O projeto foi reestruturado seguindo o modelo de arquitetura baseada em APIs, separando completamente as regras de negócio (Back-end) das interfaces de interação (Front-end).
+
+* **Back-end (API Rest):** *
+* **Node.js** com **Express.js** para criação e roteamento da API.
+
+* **CORS** para liberação de requisições de múltiplas origens de forma segura.
+* **PDFKit** para a geração automatizada e dinâmica do *Smart Report* clínico em formato PDF.
+
+
+* **Front-end (Arquitetura Multitelas):**
+
+* **Dashboard do Médico:** HTML5, CSS3 e Vanilla JavaScript (Fetch API) estruturado para análise de dados, validação de alertas críticos de BPM e emissão de relatórios.
+ 
+* **Simulador do App do Paciente:** Interface mobile-first (HTML/CSS) criada para simular a coleta passiva de dados (*Patient Generated Health Data*) via **Google Health API / Health Connect**.
+ 
+---
 
 **Atualizações futuras**
-* **Simulação Mobile:** Postman (Testes de integração de API).
-* **Integrações Futuras:** Google Fit API / Apple HealthKit via React Native/Flutter.
+* **Dashboard na pagina do paciente e opção de envio de dados para o médico.
+* **Otimização da pagina do médico com features exclusivos na sessão do médico.
+* **Integrações Futuras:** Google Fit API / Apple HealthKit definitivos para exibir dados reais via React Native/Flutter.
 
 ---
 
