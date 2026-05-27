@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Korasõ - App Paciente</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f5f7; display: flex; justify-content: center; padding: 50px; }
+        .phone { width: 320px; height: 500px; background: white; border-radius: 30px; border: 8px solid #222; padding: 30px 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); text-align: center; }
+        .btn-sync { width: 100%; background: #0052CC; color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 20px; transition: 0.2s; }
+        .status { color: #5e6c84; margin-top: 40px; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="phone">
+        <h2 style="color: #0052CC; margin-bottom: 5px;">Korasõ App</h2>
+        <p style="color: #666; font-size: 14px;">Mantenha seus dados atualizados para a sua próxima consulta na Unimed.</p>
+        
+        <div class="status" id="status">
+            <p>Seus dados do Google Health não foram enviados hoje.</p>
+        </div>
+
+        <button class="btn-sync" onclick="enviarGoogle()">☁️ Sincronizar Google Health</button>
+    </div>
+
+    <script>
+        const pacienteId = new URLSearchParams(window.location.search).get('id') || '12345';
+        
+        async function enviarGoogle() {
+            try {
+                const btn = document.querySelector('button');
+                btn.innerText = "⏳ Sincronizando...";
+                btn.style.backgroundColor = "#5E6C84";
+
+                // Bate na porta da API Korasõ pedindo para ir no Google
+                await fetch(`http://localhost:3000/api/sincronizar/google/${pacienteId}`);
+                
+                // Mensagem de sucesso
+                document.getElementById('status').innerHTML = "<h3 style='color: #00995D;'>✅ Dados enviados com sucesso!</h3><p>Seu médico já tem acesso ao seu relatório.</p>";
+                btn.style.display = 'none'; // Esconde o botão para não enviar duas vezes
+
+            } catch(error) {
+                alert("Erro ao conectar com o servidor Korasõ. O Node.js está rodando?");
+                console.error(error);
+            }
+        }
+    </script>
+</body>
+</html>

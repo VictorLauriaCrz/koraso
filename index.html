@@ -1,24 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>- Korasõ -</title>
-  <link rel="stylesheet" href="style.css">
+    <title>- Korasõ Médico -</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container" id="app">
-        <div class="loading" id="mensagem-carregando">Sincronizando dados com o servidor Korasõ...</div>
+        <div class="loading" id="mensagem-carregando">
+            </div>
         
         <div id="painel-medico" style="display: none;">
             <div class="header">
-                <h2>🫀 Korasõ | Smart Report</h2>
-                <span>ID Consulta: #12345</span>
+                <h2>Korasõ Dashboard</h2>
+                <div>
+                    <button onclick="gerarPDF()" style="background-color: #36B37E; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-right: 10px;">
+                        📄 Gerar Smart Report
+                    </button>
+                    <button id="btn-atualizar" onclick="carregarDadosPaciente()" style="background-color: #0052CC; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold;">
+                        🔄 Atualizar Dados
+                    </button>
+                </div>
             </div>
             
             <div class="paciente-info">
                 <h1 id="nome-paciente">Carregando Nome...</h1>
-                <p>Status: <strong class="alerta-verde">Dados Sincronizados com Sucesso</strong></p>
+                <p>Status: <strong style="color: #00995D;">Sincronizado com o App do Paciente</strong></p>
                 <small>Última atualização: <span id="data-hora"></span></small>
             </div>
 
@@ -42,63 +50,78 @@
         </div>
     </div>
 
-<script>
+    <script>
+        const parametrosUrl = new URLSearchParams(window.location.search);
+        const pacienteId = parametrosUrl.get('id') || '12345'; 
 
-/* Script que consome a API Dinâmica */
+        async function carregarDadosPaciente(){
+            try {
+                // Se o botão do header existir na tela, muda pra "Buscando..."
+                const btnHeader = document.getElementById('btn-atualizar');
+                if(btnHeader) btnHeader.innerText = "⏳ Buscando...";
 
-// 1. Pegam o ID da barra de endereços (ex: ?id=777)
-const parametrosUrl = new URLSearchParams(window.location.search);
-// Se não tiver ID na URL, usam o 12345 como padrão para não quebrar a tela
-const pacienteId = parametrosUrl.get('id') || '12345'; 
+                // Puxa os dados do nosso servidor
+                const resposta = await fetch(`http://localhost:3000/api/medico/paciente/${pacienteId}`);
 
-async function carregarDadosPaciente(){
-    try {
-        // 2. Injetamos a variável pacienteId na URL da nossa API
-        const resposta = await fetch(`http://localhost:3000/api/medico/paciente/${pacienteId}`);
+                if (!resposta.ok) {
+                    throw new Error('Paciente não encontrado');
+                }
 
-        if (!resposta.ok) {
-            throw new Error('Paciente não encontrado');
+                const respostaCompleta = await resposta.json();
+                const paciente = respostaCompleta.dados;
+
+                // Esconde a tela de erro e revela o painel do médico
+                document.getElementById('mensagem-carregando').style.display = 'none';
+                document.getElementById('painel-medico').style.display = 'block';
+
+                // Injeta as informações
+                document.getElementById('nome-paciente').innerText = `Paciente: ${paciente.nome}`;
+                document.getElementById('bpm-valor').innerText = paciente.bpm_repouso;
+                document.getElementById('passos-valor').innerText = paciente.passos_diarios;
+                document.getElementById('sono-valor').innerText = paciente.horas_sono;
+
+                // Formata a hora com segundos para dar a sensação de atualização em tempo real
+                const dataFormatada = new Date(paciente.data_sincronizacao || Date.now()).toLocaleDateString('pt-BR', {
+                    day: '2-digit', month: '2-digit', year: 'numeric',
+                    hour: '2-digit', minute: '2-digit', second: '2-digit'
+                });
+                document.getElementById('data-hora').innerText = dataFormatada;
+
+                // Alerta visual do coração
+                if (paciente.bpm_repouso > 90){
+                    document.getElementById('bpm-valor').style.color = 'red';
+                } else {
+                    document.getElementById('bpm-valor').style.color = '#00995D'; 
+                }
+
+                // Devolve o texto normal ao botão
+                if(btnHeader) btnHeader.innerText = "🔄 Atualizar Dados";
+
+            } catch (error) {
+                console.error('Erro ao carregar dashboard:', error);
+                
+                // Se não achar o paciente, esconde o painel e mostra a tela de carregamento com botão
+                document.getElementById('painel-medico').style.display = 'none';
+                document.getElementById('mensagem-carregando').style.display = 'block';
+                
+                document.getElementById('mensagem-carregando').innerHTML = `
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 20px; margin-top: 50px;">
+                        <p style="color: #5F6C7B; font-size: 18px;">Aguardando o paciente enviar os dados pelo aplicativo...</p>
+                        <button onclick="carregarDadosPaciente()" style="background-color: #0052CC; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold;">
+                            🔄 Verificar Novamente
+                        </button>
+                    </div>
+                `;
+            }
         }
 
-        const respostaCompleta = await resposta.json();
-        const paciente = respostaCompleta.dados;
+        // Roda a função sozinho ao abrir a página
+        carregarDadosPaciente();
 
-        // Esconde as mensagens de carregando e mostra o painel médico
-        document.getElementById('mensagem-carregando').style.display = 'none';
-        document.getElementById('painel-medico').style.display = 'block';
-
-        // 3. Otimização visual: Atualiza o cabeçalho com o ID real
-        document.querySelector('.header span').innerText = `ID Consulta: #${pacienteId}`;
-
-        // Injetando os dados
-        document.getElementById('nome-paciente').innerText = `Paciente: ${paciente.nome}`;
-        document.getElementById('bpm-valor').innerText = paciente.bpm_repouso;
-        document.getElementById('passos-valor').innerText = paciente.passos_diarios;
-        document.getElementById('sono-valor').innerText = paciente.horas_sono;
-
-        const dataFormatada = new Date(paciente.data_sincronizacao || Date.now()).toLocaleDateString('pt-BR', {
-            day: '2-digit', month: '2-digit', year: 'numeric',
-            hour: '2-digit', minute: '2-digit'
-        });
-        document.getElementById('data-hora').innerText = dataFormatada;
-
-        // Validador de cor
-        if (paciente.bpm_repouso > 90){
-            document.getElementById('bpm-valor').style.color = 'red';
-        } else {
-            document.getElementById('bpm-valor').style.color = '#00995D'; 
+        // Rota do PDF
+        function gerarPDF() {
+            window.open(`http://localhost:3000/api/medico/paciente/${pacienteId}/pdf`, '_blank');
         }
-
-    } catch (error) {
-        console.error('Erro:', error);
-        document.getElementById('mensagem-carregando').innerText = 'Aguardando sincronização do smartwatch deste paciente...';
-        document.getElementById('mensagem-carregando').style.color = '#5F6C7B';
-    }
-}
-
-carregarDadosPaciente();
-
-</script>
-
+    </script>
 </body>
 </html>
