@@ -144,3 +144,155 @@ body {
     font-weight: 600;
     font-size: 1.1rem;
 }
+
+/* 7. LOGIN E AUTENTICAÇÃO */
+.login-body {
+    align-items: center;
+    min-height: 100vh;
+}
+
+.login-wrapper {
+    width: 100%;
+    max-width: 420px;
+}
+
+.login-card {
+    background-color: var(--branco);
+    padding: 32px 28px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(9, 30, 66, 0.08);
+}
+
+.login-title {
+    color: var(--azul-atlassian);
+    font-size: 2rem;
+    margin-bottom: 4px;
+}
+
+.login-subtitle {
+    color: var(--cinza-texto);
+    margin-bottom: 24px;
+    font-size: 0.95rem;
+}
+
+.login-form label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--azul-marinho);
+    margin-bottom: 6px;
+}
+
+.login-form input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #DFE1E6;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    font-size: 1rem;
+}
+
+.login-form input:focus {
+    outline: 2px solid rgba(0, 82, 204, 0.25);
+    border-color: var(--azul-atlassian);
+}
+
+.login-error {
+    color: var(--vermelho-alerta);
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+}
+
+.login-demo {
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid #DFE1E6;
+    font-size: 0.85rem;
+    color: var(--cinza-texto);
+    line-height: 1.5;
+}
+
+.btn-primary {
+    background-color: var(--azul-atlassian);
+    color: var(--branco);
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+}
+
+.btn-primary:hover {
+    background-color: #0747A6;
+}
+
+.btn-primary:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.btn-success {
+    background-color: var(--verde-sucesso);
+    color: var(--branco);
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-logout {
+    background-color: transparent;
+    color: var(--cinza-texto);
+    border: 1px solid #DFE1E6;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.btn-logout:hover {
+    background-color: #F4F5F7;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.medico-nome {
+    color: var(--cinza-texto);
+    font-size: 0.9rem;
+    margin-top: 4px;
+}
+
+.select-paciente-label {
+    font-size: 0.85rem;
+    color: var(--cinza-texto);
+    font-weight: 600;
+}
+
+.select-paciente {
+    padding: 8px 10px;
+    border: 1px solid #DFE1E6;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    min-width: 200px;
+}
+
+.loading-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin-top: 50px;
+}
+
+.loading-actions p {
+    color: #5F6C7B;
+    font-size: 18px;
+}

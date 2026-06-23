@@ -1,0 +1,28 @@
+{
+  "usuarios": [
+    {
+      "id": "12345",
+      "email": "maria.silva@unimed.demo",
+      "senha": "koraso123",
+      "perfil": "paciente",
+      "nome": "Maria Silva",
+      "carteirinha": "12345"
+    },
+    {
+      "id": "67890",
+      "email": "carlos.souza@unimed.demo",
+      "senha": "koraso123",
+      "perfil": "paciente",
+      "nome": "Carlos Souza",
+      "carteirinha": "67890"
+    },
+    {
+      "id": "med001",
+      "email": "joao.medico@unimed.demo",
+      "senha": "koraso123",
+      "perfil": "medico",
+      "nome": "Dr. João Santos",
+      "crm": "CRM-54321"
+    }
+  ]
+}

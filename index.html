@@ -3,27 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>- Korasõ Médico -</title>
+    <title>Korasõ Médico</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container" id="app">
-        <div class="loading" id="mensagem-carregando">
-            </div>
-        
+        <div class="loading" id="mensagem-carregando"></div>
+
         <div id="painel-medico" style="display: none;">
             <div class="header">
-                <h2>Korasõ Dashboard</h2>
                 <div>
-                    <button onclick="gerarPDF()" style="background-color: #36B37E; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-right: 10px;">
+                    <h2>Korasõ Dashboard</h2>
+                    <p class="medico-nome" id="nome-medico"></p>
+                </div>
+                <div class="header-actions">
+                    <label class="select-paciente-label" for="select-paciente">Paciente:</label>
+                    <select id="select-paciente" class="select-paciente" onchange="trocarPaciente()"></select>
+                    <button onclick="gerarPDF()" class="btn-success">
                         📄 Gerar Smart Report
                     </button>
-                    <button id="btn-atualizar" onclick="carregarDadosPaciente()" style="background-color: #0052CC; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold;">
+                    <button id="btn-atualizar" onclick="carregarDadosPaciente()" class="btn-primary">
                         🔄 Atualizar Dados
                     </button>
+                    <button type="button" class="btn-logout" onclick="logout()">Sair</button>
                 </div>
             </div>
-            
+
             <div class="paciente-info">
                 <h1 id="nome-paciente">Carregando Nome...</h1>
                 <p>Status: <strong style="color: #00995D;">Sincronizado com o App do Paciente</strong></p>
@@ -50,18 +55,50 @@
         </div>
     </div>
 
+    <script src="auth.js"></script>
     <script>
-        const parametrosUrl = new URLSearchParams(window.location.search);
-        const pacienteId = parametrosUrl.get('id') || '12345'; 
+        let pacienteId = null;
 
-        async function carregarDadosPaciente(){
+        async function iniciarDashboardMedico() {
+            const sessao = await verificarSessao('medico');
+            if (!sessao) return;
+
+            document.getElementById('nome-medico').textContent = sessao.usuario.nome;
+
+            const pacientes = await listarPacientes();
+            const select = document.getElementById('select-paciente');
+            select.innerHTML = '';
+
+            pacientes.forEach((paciente) => {
+                const option = document.createElement('option');
+                option.value = paciente.id;
+                option.textContent = `${paciente.nome} (#${paciente.carteirinha})`;
+                select.appendChild(option);
+            });
+
+            if (pacientes.length > 0) {
+                pacienteId = pacientes[0].id;
+                select.value = pacienteId;
+                carregarDadosPaciente();
+            } else {
+                document.getElementById('mensagem-carregando').innerHTML =
+                    '<p>Nenhum paciente cadastrado no sistema.</p>';
+            }
+        }
+
+        function trocarPaciente() {
+            pacienteId = document.getElementById('select-paciente').value;
+            carregarDadosPaciente();
+        }
+
+        async function carregarDadosPaciente() {
+            if (!pacienteId) return;
+
+            const btnHeader = document.getElementById('btn-atualizar');
+            if (btnHeader) btnHeader.textContent = '⏳ Buscando...';
+
             try {
-                // Se o botão do header existir na tela, muda pra "Buscando..."
-                const btnHeader = document.getElementById('btn-atualizar');
-                if(btnHeader) btnHeader.innerText = "⏳ Buscando...";
-
-                // Puxa os dados do nosso servidor
-                const resposta = await fetch(`http://localhost:3000/api/medico/paciente/${pacienteId}`);
+                const resposta = await fetch(`${API_BASE}/api/medico/paciente/${pacienteId}`);
 
                 if (!resposta.ok) {
                     throw new Error('Paciente não encontrado');
@@ -70,44 +107,38 @@
                 const respostaCompleta = await resposta.json();
                 const paciente = respostaCompleta.dados;
 
-                // Esconde a tela de erro e revela o painel do médico
                 document.getElementById('mensagem-carregando').style.display = 'none';
                 document.getElementById('painel-medico').style.display = 'block';
 
-                // Injeta as informações
                 document.getElementById('nome-paciente').innerText = `Paciente: ${paciente.nome}`;
                 document.getElementById('bpm-valor').innerText = paciente.bpm_repouso;
                 document.getElementById('passos-valor').innerText = paciente.passos_diarios;
                 document.getElementById('sono-valor').innerText = paciente.horas_sono;
 
-                // Formata a hora com segundos para dar a sensação de atualização em tempo real
                 const dataFormatada = new Date(paciente.data_sincronizacao || Date.now()).toLocaleDateString('pt-BR', {
                     day: '2-digit', month: '2-digit', year: 'numeric',
-                    hour: '2-digit', minute: '2-digit', second: '2-digit'
+                    hour: '2-digit', minute: '2-digit', second: '2-digit',
                 });
                 document.getElementById('data-hora').innerText = dataFormatada;
 
-                // Alerta visual do coração
-                if (paciente.bpm_repouso > 90){
-                    document.getElementById('bpm-valor').style.color = 'red';
+                const bpmEl = document.getElementById('bpm-valor');
+                if (paciente.bpm_repouso > 90) {
+                    bpmEl.style.color = 'red';
                 } else {
-                    document.getElementById('bpm-valor').style.color = '#00995D'; 
+                    bpmEl.style.color = '#00995D';
                 }
 
-                // Devolve o texto normal ao botão
-                if(btnHeader) btnHeader.innerText = "🔄 Atualizar Dados";
-
+                if (btnHeader) btnHeader.textContent = '🔄 Atualizar Dados';
             } catch (error) {
                 console.error('Erro ao carregar dashboard:', error);
-                
-                // Se não achar o paciente, esconde o painel e mostra a tela de carregamento com botão
+
                 document.getElementById('painel-medico').style.display = 'none';
                 document.getElementById('mensagem-carregando').style.display = 'block';
-                
+
                 document.getElementById('mensagem-carregando').innerHTML = `
-                    <div style="display: flex; flex-direction: column; align-items: center; gap: 20px; margin-top: 50px;">
-                        <p style="color: #5F6C7B; font-size: 18px;">Aguardando o paciente enviar os dados pelo aplicativo...</p>
-                        <button onclick="carregarDadosPaciente()" style="background-color: #0052CC; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold;">
+                    <div class="loading-actions">
+                        <p>Aguardando o paciente enviar os dados pelo aplicativo...</p>
+                        <button onclick="carregarDadosPaciente()" class="btn-primary">
                             🔄 Verificar Novamente
                         </button>
                     </div>
@@ -115,13 +146,12 @@
             }
         }
 
-        // Roda a função sozinho ao abrir a página
-        carregarDadosPaciente();
-
-        // Rota do PDF
         function gerarPDF() {
-            window.open(`http://localhost:3000/api/medico/paciente/${pacienteId}/pdf`, '_blank');
+            if (!pacienteId) return;
+            window.open(`${API_BASE}/api/medico/paciente/${pacienteId}/pdf`, '_blank');
         }
+
+        iniciarDashboardMedico();
     </script>
 </body>
 </html>

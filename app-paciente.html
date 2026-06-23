@@ -2,47 +2,102 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Korasõ - App Paciente</title>
+    <link rel="stylesheet" href="style.css">
     <style>
-        body { font-family: sans-serif; background: #f4f5f7; display: flex; justify-content: center; padding: 50px; }
-        .phone { width: 320px; height: 500px; background: white; border-radius: 30px; border: 8px solid #222; padding: 30px 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); text-align: center; }
-        .btn-sync { width: 100%; background: #0052CC; color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 20px; transition: 0.2s; }
-        .status { color: #5e6c84; margin-top: 40px; font-size: 14px; }
+        .phone-body {
+            background: var(--cinza-fundo);
+            display: flex;
+            justify-content: center;
+            padding: 50px 20px;
+        }
+
+        .phone {
+            width: 320px;
+            min-height: 520px;
+            background: var(--branco);
+            border-radius: 30px;
+            border: 8px solid #222;
+            padding: 24px 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .phone-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .phone-greeting {
+            color: var(--cinza-texto);
+            font-size: 13px;
+            margin-bottom: 16px;
+        }
+
+        .btn-sync {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .status {
+            color: var(--cinza-texto);
+            margin-top: 32px;
+            font-size: 14px;
+        }
     </style>
 </head>
-<body>
+<body class="phone-body">
     <div class="phone">
-        <h2 style="color: #0052CC; margin-bottom: 5px;">Korasõ App</h2>
+        <div class="phone-header">
+            <h2 style="color: var(--azul-atlassian); margin: 0;">Korasõ App</h2>
+            <button type="button" class="btn-logout" onclick="logout()">Sair</button>
+        </div>
+        <p class="phone-greeting" id="saudacao-paciente">Olá, beneficiário Unimed</p>
         <p style="color: #666; font-size: 14px;">Mantenha seus dados atualizados para a sua próxima consulta na Unimed.</p>
-        
+
         <div class="status" id="status">
             <p>Seus dados do Google Health não foram enviados hoje.</p>
         </div>
 
-        <button class="btn-sync" onclick="enviarGoogle()">☁️ Sincronizar Google Health</button>
+        <button class="btn-sync btn-primary" id="btn-sync" onclick="enviarGoogle()">☁️ Sincronizar Google Health</button>
     </div>
 
+    <script src="auth.js"></script>
     <script>
-        const pacienteId = new URLSearchParams(window.location.search).get('id') || '12345';
-        
+        let pacienteId = null;
+
+        async function iniciarAppPaciente() {
+            const sessao = await verificarSessao('paciente');
+            if (!sessao) return;
+
+            pacienteId = sessao.usuario.id;
+            document.getElementById('saudacao-paciente').textContent = `Olá, ${sessao.usuario.nome}`;
+        }
+
         async function enviarGoogle() {
+            if (!pacienteId) return;
+
+            const btn = document.getElementById('btn-sync');
+            btn.textContent = '⏳ Sincronizando...';
+            btn.disabled = true;
+
             try {
-                const btn = document.querySelector('button');
-                btn.innerText = "⏳ Sincronizando...";
-                btn.style.backgroundColor = "#5E6C84";
-
-                // Bate na porta da API Korasõ pedindo para ir no Google
-                await fetch(`http://localhost:3000/api/sincronizar/google/${pacienteId}`);
-                
-                // Mensagem de sucesso
-                document.getElementById('status').innerHTML = "<h3 style='color: #00995D;'>✅ Dados enviados com sucesso!</h3><p>Seu médico já tem acesso ao seu relatório.</p>";
-                btn.style.display = 'none'; // Esconde o botão para não enviar duas vezes
-
-            } catch(error) {
-                alert("Erro ao conectar com o servidor Korasõ. O Node.js está rodando?");
+                await fetch(`${API_BASE}/api/sincronizar/google/${pacienteId}`);
+                document.getElementById('status').innerHTML =
+                    '<h3 style="color: #00995D;">✅ Dados enviados com sucesso!</h3><p>Seu médico já tem acesso ao seu relatório.</p>';
+                btn.style.display = 'none';
+            } catch (error) {
+                alert('Erro ao conectar com o servidor Korasõ. O Node.js está rodando?');
                 console.error(error);
+                btn.textContent = '☁️ Sincronizar Google Health';
+                btn.disabled = false;
             }
         }
+
+        iniciarAppPaciente();
     </script>
 </body>
 </html>

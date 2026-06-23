@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Korasõ - Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="login-body">
+    <div class="login-wrapper">
+        <div class="login-card">
+            <h1 class="login-title">Korasõ</h1>
+            <p class="login-subtitle">Login integrado Unimed (simulado)</p>
+
+            <form class="login-form" id="form-login">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" name="email" placeholder="seu.email@unimed.demo" required>
+
+                <label for="senha">Senha</label>
+                <input type="password" id="senha" name="senha" placeholder="Senha" required>
+
+                <p class="login-error" id="login-erro" hidden></p>
+
+                <button type="submit" class="btn-primary" id="btn-entrar">Entrar</button>
+            </form>
+
+            <div class="login-demo">
+                <p><strong>Credenciais de demonstração</strong></p>
+                <p>Paciente: maria.silva@unimed.demo / koraso123</p>
+                <p>Médico: joao.medico@unimed.demo / koraso123</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script>
+        async function iniciarLogin() {
+            const sessao = obterSessao();
+            if (sessao?.token) {
+                const usuario = await validarTokenRemoto(sessao.token);
+                if (usuario) {
+                    redirecionarPorPerfil(usuario.perfil);
+                    return;
+                }
+                limparSessao();
+            }
+        }
+
+        document.getElementById('form-login').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const email = document.getElementById('email').value.trim();
+            const senha = document.getElementById('senha').value;
+            const erroEl = document.getElementById('login-erro');
+            const btnEntrar = document.getElementById('btn-entrar');
+
+            erroEl.hidden = true;
+            btnEntrar.disabled = true;
+            btnEntrar.textContent = 'Entrando...';
+
+            try {
+                const resposta = await fetch(`${API_BASE}/api/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, senha }),
+                });
+
+                const dados = await resposta.json();
+
+                if (!resposta.ok) {
+                    erroEl.textContent = dados.error || 'Credenciais inválidas.';
+                    erroEl.hidden = false;
+                    return;
+                }
+
+                salvarSessao(dados.token, dados.usuario);
+                redirecionarPorPerfil(dados.usuario.perfil);
+            } catch {
+                erroEl.textContent = 'Erro ao conectar com o servidor. Verifique se node server.js está rodando.';
+                erroEl.hidden = false;
+            } finally {
+                btnEntrar.disabled = false;
+                btnEntrar.textContent = 'Entrar';
+            }
+        });
+
+        iniciarLogin();
+    </script>
+</body>
+</html>
