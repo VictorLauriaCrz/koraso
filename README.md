@@ -21,34 +21,19 @@ Atualmente, o projeto possui uma API funcional que simula o recebimento dos dado
 
 ## 🔐 Login Integrado Simulado (JSON Local)
 
-Autenticação simulada com credenciais em `data/users.json`, sem integração com APIs oficiais da Unimed. Uma tela de login unificada redireciona automaticamente conforme o perfil do usuário.
+Os arquivos desta funcionalidade estão na pasta [`Login Integrado Simulado (JSON Local)/`](Login%20Integrado%20Simulado%20(JSON%20Local)/).
 
 ### Como executar
 
 ```bash
+cd "Login Integrado Simulado (JSON Local)"
 npm install
 node server.js
 ```
 
 Abra no navegador: `http://localhost:3000/login.html`
 
-### Credenciais de demonstração
-
-| Perfil | E-mail | Senha |
-|--------|--------|-------|
-| Paciente (Maria Silva) | maria.silva@unimed.demo | koraso123 |
-| Paciente (Carlos Souza) | carlos.souza@unimed.demo | koraso123 |
-| Médico | joao.medico@unimed.demo | koraso123 |
-
-### Fluxo
-
-1. Login em `login.html` valida e-mail e senha contra o JSON local.
-2. Paciente é redirecionado ao `app-paciente.html` com sessão personalizada.
-3. Médico é redirecionado ao `index.html` com seletor de pacientes.
-4. Páginas protegidas redirecionam ao login se a sessão é inválida.
-
-**Nota:** Senhas em texto plano e tokens em memória são aceitáveis apenas para esta simulação acadêmica.
-
+Detalhes, credenciais de demonstração e fluxo completo: veja o [README da pasta](Login%20Integrado%20Simulado%20(JSON%20Local)/README.md).
 
 ### 🛠️ Tecnologias Utilizadas e Arquitetura
 
