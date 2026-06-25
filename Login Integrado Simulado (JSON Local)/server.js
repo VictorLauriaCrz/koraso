@@ -12,9 +12,31 @@ app.use(express.json());
 const databaseKoraso = {};
 const sessoes = {};
 
-const usuarios = JSON.parse(
-    fs.readFileSync(path.join(__dirname, 'data', 'users.json'), 'utf8')
-).usuarios;
+const USERS_FILE = path.join(__dirname, 'data', 'users.json');
+
+function carregarUsuarios() {
+    const dados = JSON.parse(fs.readFileSync(USERS_FILE, 'utf8'));
+    return dados.usuarios;
+}
+
+function salvarUsuarios(lista) {
+    fs.writeFileSync(USERS_FILE, JSON.stringify({ usuarios: lista }, null, 2), 'utf8');
+}
+
+let usuarios = carregarUsuarios();
+
+function gerarIdPaciente() {
+    let id;
+    do {
+        id = String(Math.floor(10000 + Math.random() * 90000));
+    } while (usuarios.some((u) => u.id === id));
+    return id;
+}
+
+function emailEmUso(email) {
+    const normalizado = email.trim().toLowerCase();
+    return usuarios.some((u) => u.email.trim().toLowerCase() === normalizado);
+}
 
 function usuarioPublico(usuario) {
     const { senha, ...dados } = usuario;
@@ -56,6 +78,55 @@ app.post('/api/auth/login', (req, res) => {
     return res.status(200).json({
         token,
         usuario: usuarioPublico(usuario),
+    });
+});
+
+app.post('/api/auth/register', (req, res) => {
+    const { nome, email, senha } = req.body;
+
+    if (!nome || !email || !senha) {
+        return res.status(400).json({ error: 'Nome, e-mail e senha são obrigatórios.' });
+    }
+
+    const nomeLimpo = nome.trim();
+    const emailLimpo = email.trim().toLowerCase();
+
+    if (nomeLimpo.length < 2) {
+        return res.status(400).json({ error: 'Informe um nome válido.' });
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailLimpo)) {
+        return res.status(400).json({ error: 'Informe um e-mail válido.' });
+    }
+
+    if (senha.length < 6) {
+        return res.status(400).json({ error: 'A senha deve ter no mínimo 6 caracteres.' });
+    }
+
+    if (emailEmUso(emailLimpo)) {
+        return res.status(409).json({ error: 'Este e-mail já está cadastrado.' });
+    }
+
+    const id = gerarIdPaciente();
+    const novoUsuario = {
+        id,
+        email: emailLimpo,
+        senha,
+        perfil: 'paciente',
+        nome: nomeLimpo,
+        carteirinha: id,
+    };
+
+    usuarios.push(novoUsuario);
+    salvarUsuarios(usuarios);
+
+    const token = crypto.randomBytes(32).toString('hex');
+    sessoes[token] = usuarioPublico(novoUsuario);
+
+    return res.status(201).json({
+        message: 'Conta criada com sucesso.',
+        token,
+        usuario: usuarioPublico(novoUsuario),
     });
 });
 
