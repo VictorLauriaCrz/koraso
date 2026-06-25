@@ -22,8 +22,9 @@ Abra no navegador: `http://localhost:3000/login.html`
 ## Fluxo
 
 1. Login em `login.html` valida e-mail e senha contra o JSON local.
-2. Paciente é redirecionado ao `app-paciente.html` com sessão personalizada.
-3. Médico é redirecionado ao `index.html` com seletor de pacientes.
-4. Páginas protegidas redirecionam ao login se a sessão é inválida.
+2. **Criar Conta** cadastra um novo paciente em `data/users.json` e entra automaticamente.
+3. Paciente é redirecionado ao `app-paciente.html` com sessão personalizada.
+4. Médico é redirecionado ao `index.html` com seletor de pacientes.
+5. Páginas protegidas redirecionam ao login se a sessão é inválida.
 
-**Nota:** Senhas em texto plano e tokens em memória são aceitáveis apenas para esta simulação acadêmica.
+**Nota:** Senhas em texto plano e tokens em memória são aceitáveis apenas para esta simulação acadêmica. Novos cadastros são sempre do perfil **paciente**.

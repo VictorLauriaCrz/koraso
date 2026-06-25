@@ -4,59 +4,117 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Korasõ - Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="login-body">
-    <div class="login-wrapper">
-        <div class="login-card">
-            <h1 class="login-title">Korasõ</h1>
-            <p class="login-subtitle">Login integrado Unimed (simulado)</p>
-
-            <form class="login-form" id="form-login">
-                <label for="email">E-mail</label>
-                <input type="email" id="email" name="email" placeholder="seu.email@unimed.demo" required>
-
-                <label for="senha">Senha</label>
-                <input type="password" id="senha" name="senha" placeholder="Senha" required>
-
-                <p class="login-error" id="login-erro" hidden></p>
-
-                <button type="submit" class="btn-primary" id="btn-entrar">Entrar</button>
-            </form>
-
-            <div class="login-demo">
-                <p><strong>Credenciais de demonstração</strong></p>
-                <p>Paciente: maria.silva@unimed.demo / koraso123</p>
-                <p>Médico: joao.medico@unimed.demo / koraso123</p>
-            </div>
+<body class="auth-body">
+    <!-- Tela 1: Boas-vindas -->
+    <section id="tela-bem-vindo" class="auth-screen auth-screen--active">
+        <div class="auth-hero">
+            <img src="assets/logo-koraso.png" alt="Korasõ" class="auth-logo-img auth-logo-img--large">
+            <p class="auth-tagline">Seja bem vindo a sua Ponte de Dados Inteligente</p>
         </div>
-    </div>
+
+        <div class="auth-actions">
+            <button type="button" class="btn-auth btn-auth-primary" data-tela="entrar">Entrar</button>
+            <button type="button" class="btn-auth btn-auth-outline" data-tela="criar-conta">Criar Conta</button>
+        </div>
+    </section>
+
+    <!-- Tela 2: Entrar -->
+    <section id="tela-entrar" class="auth-screen">
+        <div class="auth-form-header">
+            <button type="button" class="auth-back" data-tela="bem-vindo" aria-label="Voltar">←</button>
+            <h1 class="auth-form-title">Entrar</h1>
+            <img src="assets/logo-koraso.png" alt="Korasõ" class="auth-logo-img auth-logo-img--small">
+        </div>
+
+        <form class="auth-form" id="form-login">
+            <label class="auth-field">
+                <span>Email</span>
+                <input type="email" id="email" name="email" placeholder="seu.email@unimed.demo" autocomplete="email" required>
+            </label>
+
+            <label class="auth-field">
+                <span>Senha</span>
+                <input type="password" id="senha" name="senha" placeholder="Senha" autocomplete="current-password" required>
+            </label>
+
+            <p class="auth-error" id="login-erro" hidden></p>
+
+            <div class="auth-actions auth-actions--form">
+                <button type="submit" class="btn-auth btn-auth-primary" id="btn-entrar">Entrar</button>
+                <span class="auth-divider">OU</span>
+                <button type="button" class="btn-auth btn-auth-outline" id="btn-unimed-entrar">Entrar Conta Unimed</button>
+            </div>
+        </form>
+
+        <div class="auth-demo">
+            <p><strong>Demonstração</strong></p>
+            <p>Paciente: maria.silva@unimed.demo / koraso123</p>
+            <p>Médico: joao.medico@unimed.demo / koraso123</p>
+        </div>
+    </section>
+
+    <!-- Tela 3: Criar Conta -->
+    <section id="tela-criar-conta" class="auth-screen">
+        <div class="auth-form-header">
+            <button type="button" class="auth-back" data-tela="bem-vindo" aria-label="Voltar">←</button>
+            <h1 class="auth-form-title">Criar Conta</h1>
+            <img src="assets/logo-koraso.png" alt="Korasõ" class="auth-logo-img auth-logo-img--small">
+        </div>
+
+        <form class="auth-form" id="form-criar-conta">
+            <label class="auth-field">
+                <span>Nome</span>
+                <input type="text" id="nome" name="nome" placeholder="Seu nome completo" autocomplete="name" required>
+            </label>
+
+            <label class="auth-field">
+                <span>Email</span>
+                <input type="email" id="email-criar" name="email" placeholder="seu.email@unimed.demo" autocomplete="email" required>
+            </label>
+
+            <label class="auth-field">
+                <span>Senha</span>
+                <input type="password" id="senha-criar" name="senha" placeholder="Senha" autocomplete="new-password" minlength="6" required>
+            </label>
+
+            <p class="auth-error" id="criar-erro" hidden></p>
+            <p class="auth-info" id="criar-info" hidden></p>
+
+            <div class="auth-actions auth-actions--form">
+                <button type="submit" class="btn-auth btn-auth-primary" id="btn-criar">Criar Conta</button>
+                <span class="auth-divider">OU</span>
+                <button type="button" class="btn-auth btn-auth-outline" id="btn-unimed-criar">Entrar Conta Unimed</button>
+            </div>
+        </form>
+    </section>
 
     <script src="auth.js"></script>
     <script>
-        async function iniciarLogin() {
-            const sessao = obterSessao();
-            if (sessao?.token) {
-                const usuario = await validarTokenRemoto(sessao.token);
-                if (usuario) {
-                    redirecionarPorPerfil(usuario.perfil);
-                    return;
-                }
-                limparSessao();
-            }
+        const telas = {
+            'bem-vindo': document.getElementById('tela-bem-vindo'),
+            entrar: document.getElementById('tela-entrar'),
+            'criar-conta': document.getElementById('tela-criar-conta'),
+        };
+
+        function mostrarTela(nome) {
+            Object.values(telas).forEach((tela) => tela.classList.remove('auth-screen--active'));
+            telas[nome].classList.add('auth-screen--active');
         }
 
-        document.getElementById('form-login').addEventListener('submit', async (event) => {
-            event.preventDefault();
+        document.querySelectorAll('[data-tela]').forEach((botao) => {
+            botao.addEventListener('click', () => mostrarTela(botao.dataset.tela));
+        });
 
-            const email = document.getElementById('email').value.trim();
-            const senha = document.getElementById('senha').value;
-            const erroEl = document.getElementById('login-erro');
-            const btnEntrar = document.getElementById('btn-entrar');
-
+        async function realizarLogin(email, senha, erroEl, btnEl) {
             erroEl.hidden = true;
-            btnEntrar.disabled = true;
-            btnEntrar.textContent = 'Entrando...';
+            btnEl.disabled = true;
+            const textoOriginal = btnEl.textContent;
+            btnEl.textContent = 'Entrando...';
 
             try {
                 const resposta = await fetch(`${API_BASE}/api/auth/login`, {
@@ -79,8 +137,102 @@
                 erroEl.textContent = 'Erro ao conectar com o servidor. Verifique se node server.js está rodando.';
                 erroEl.hidden = false;
             } finally {
-                btnEntrar.disabled = false;
-                btnEntrar.textContent = 'Entrar';
+                btnEl.disabled = false;
+                btnEl.textContent = textoOriginal;
+            }
+        }
+
+        async function simularUnimed(btnEl) {
+            const textoOriginal = btnEl.textContent;
+            btnEl.disabled = true;
+            btnEl.textContent = 'Conectando...';
+
+            await new Promise((resolve) => setTimeout(resolve, 900));
+
+            mostrarTela('entrar');
+            document.getElementById('email').value = 'joao.medico@unimed.demo';
+            document.getElementById('senha').value = 'koraso123';
+
+            btnEl.disabled = false;
+            btnEl.textContent = textoOriginal;
+
+            const erroEl = document.getElementById('login-erro');
+            erroEl.textContent = 'SSO Unimed simulado: credenciais preenchidas.';
+            erroEl.hidden = false;
+            erroEl.classList.add('auth-error--info');
+        }
+
+        async function iniciarLogin() {
+            const sessao = obterSessao();
+            if (sessao?.token) {
+                const usuario = await validarTokenRemoto(sessao.token);
+                if (usuario) {
+                    redirecionarPorPerfil(usuario.perfil);
+                    return;
+                }
+                limparSessao();
+            }
+        }
+
+        document.getElementById('form-login').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            await realizarLogin(
+                document.getElementById('email').value.trim(),
+                document.getElementById('senha').value,
+                document.getElementById('login-erro'),
+                document.getElementById('btn-entrar')
+            );
+        });
+
+        document.getElementById('btn-unimed-entrar').addEventListener('click', () => {
+            document.getElementById('login-erro').classList.remove('auth-error--info');
+            simularUnimed(document.getElementById('btn-unimed-entrar'));
+        });
+
+        document.getElementById('btn-unimed-criar').addEventListener('click', () => {
+            document.getElementById('criar-erro').hidden = true;
+            simularUnimed(document.getElementById('btn-unimed-criar'));
+        });
+
+        document.getElementById('form-criar-conta').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const erroEl = document.getElementById('criar-erro');
+            const infoEl = document.getElementById('criar-info');
+            const btnCriar = document.getElementById('btn-criar');
+            const nome = document.getElementById('nome').value.trim();
+            const email = document.getElementById('email-criar').value.trim();
+            const senha = document.getElementById('senha-criar').value;
+
+            erroEl.hidden = true;
+            infoEl.hidden = true;
+            btnCriar.disabled = true;
+            const textoOriginal = btnCriar.textContent;
+            btnCriar.textContent = 'Criando conta...';
+
+            try {
+                const resposta = await fetch(`${API_BASE}/api/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nome, email, senha }),
+                });
+
+                const dados = await resposta.json();
+
+                if (!resposta.ok) {
+                    erroEl.textContent = dados.error || 'Não foi possível criar a conta.';
+                    erroEl.hidden = false;
+                    return;
+                }
+
+                salvarSessao(dados.token, dados.usuario);
+                redirecionarPorPerfil(dados.usuario.perfil);
+            } catch {
+                erroEl.textContent = 'Erro ao conectar com o servidor. Verifique se node server.js está rodando.';
+                erroEl.hidden = false;
+            } finally {
+                btnCriar.disabled = false;
+                btnCriar.textContent = textoOriginal;
             }
         });
 
