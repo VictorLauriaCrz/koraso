@@ -38,7 +38,7 @@ app.get('/api/sincronizar/google/:id', (req, res) => {
         nome: pacienteExiste ? pacienteExiste.nome : "Paciente Via Google Health",
         passos_diarios: dadosGoogle.passos_diarios,
         horas_sono: pacienteExiste ? pacienteExiste.horas_sono : 7.5,
-        bpm_repouso: pacienteExiste ? pacienteExiste.bpm_repouso : 72,
+        bpm_repouso: pacienteExiste ? pacienteExiste.bpm_repouso : 80,
         data_sincronizacao: new Date().toISOString()
     };
 
