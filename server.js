@@ -46,6 +46,10 @@ app.get('/api/sincronizar/google/:id', (req, res) => {
     return res.status(200).json({ message: 'Dados da nuvem integrados!', dados: pacienteAtualizado });
 });
 
+
+
+
+
 // 4. Rota do Smart Report (PDF) - O diferencial clínico
 app.get('/api/medico/paciente/:id/pdf', (req, res) => {
     const paciente = databaseKoraso[req.params.id];

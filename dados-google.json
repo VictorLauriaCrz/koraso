@@ -1,0 +1,14 @@
+{
+  "paciente": "Rodrigo",
+  "status_sincronizacao": "sucesso",
+  "fonte_dados": "Google Health Connect",
+  "dispositivos_conectados": ["smartwatch", "smartphone"],
+  "metricas": {
+    "passos_diarios": 3460,
+    "meta_passos": 5000,
+    "bpm_atual": 79,
+    "calorias_queimadas": 1670,
+    "distancia_km": 2.26,
+    "minutos_ativos": 45
+  }
+}
