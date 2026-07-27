@@ -67,37 +67,88 @@
 
     <script src="auth.js"></script>
     <script>
-        let pacienteId = null;
+    let pacienteId = null;
 
-        async function iniciarAppPaciente() {
-            const sessao = await verificarSessao('paciente');
-            if (!sessao) return;
+    function usuarioAutorizouDados(usuarioId) {
+        return localStorage.getItem(`consentimentoAceito_${usuarioId}`) === 'true';
+    }
 
-            pacienteId = sessao.usuario.id;
-            document.getElementById('saudacao-paciente').textContent = `Olá, ${sessao.usuario.nome}`;
+    async function iniciarAppPaciente() {
+        const sessao = await verificarSessao('paciente');
+        if (!sessao) return;
+
+        pacienteId = sessao.usuario.id;
+
+        document.getElementById('saudacao-paciente').textContent =
+            `Olá, ${sessao.usuario.nome}`;
+
+        const autorizou = usuarioAutorizouDados(pacienteId);
+        const btn = document.getElementById('btn-sync');
+        const status = document.getElementById('status');
+
+        if (!autorizou) {
+            btn.style.display = 'none';
+
+            status.innerHTML = `
+                <h3 style="color: #D93025;">Compartilhamento não autorizado</h3>
+                <p>Seus dados de saúde não serão sincronizados nem enviados ao médico.</p>
+                <button
+                    type="button"
+                    class="btn-primary"
+                    onclick="window.location.href='autorizacao.html'"
+                    style="margin-top: 16px;"
+                >
+                    Revisar autorização
+                </button>
+            `;
+
+            return;
         }
 
-        async function enviarGoogle() {
-            if (!pacienteId) return;
+        status.innerHTML = `
+            <p>Seus dados do Google Health não foram enviados hoje.</p>
+        `;
+    }
 
-            const btn = document.getElementById('btn-sync');
-            btn.textContent = '⏳ Sincronizando...';
-            btn.disabled = true;
+    async function enviarGoogle() {
+        if (!pacienteId) return;
 
-            try {
-                await fetch(`${API_BASE}/api/sincronizar/google/${pacienteId}`);
-                document.getElementById('status').innerHTML =
-                    '<h3 style="color: #00995D;">✅ Dados enviados com sucesso!</h3><p>Seu médico já tem acesso ao seu relatório.</p>';
-                btn.style.display = 'none';
-            } catch (error) {
-                alert('Erro ao conectar com o servidor Korasõ. O Node.js está rodando?');
-                console.error(error);
-                btn.textContent = '☁️ Sincronizar Google Health';
-                btn.disabled = false;
+        if (!usuarioAutorizouDados(pacienteId)) {
+            alert('Você não autorizou o compartilhamento dos seus dados de saúde.');
+            window.location.href = 'autorizacao.html';
+            return;
+        }
+
+        const btn = document.getElementById('btn-sync');
+        btn.textContent = '⏳ Sincronizando...';
+        btn.disabled = true;
+
+        try {
+            const resposta = await fetch(
+                `${API_BASE}/api/sincronizar/google/${pacienteId}`
+            );
+
+            if (!resposta.ok) {
+                throw new Error('Não foi possível sincronizar os dados.');
             }
-        }
 
-        iniciarAppPaciente();
-    </script>
+            document.getElementById('status').innerHTML = `
+                <h3 style="color: #00995D;">✅ Dados enviados com sucesso!</h3>
+                <p>Seu médico já tem acesso ao seu relatório.</p>
+            `;
+
+            btn.style.display = 'none';
+
+        } catch (error) {
+            alert('Erro ao conectar com o servidor Korasõ.');
+            console.error(error);
+
+            btn.textContent = '☁️ Sincronizar Google Health';
+            btn.disabled = false;
+        }
+    }
+
+    iniciarAppPaciente();
+</script>
 </body>
 </html>

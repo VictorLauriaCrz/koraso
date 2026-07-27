@@ -21,7 +21,23 @@ function limparSessao() {
 
 function redirecionarPorPerfil(perfil) {
     if (perfil === 'paciente') {
-        window.location.href = 'app-paciente.html';
+        const sessao = obterSessao();
+        const usuarioId = sessao?.usuario?.id;
+
+        if (!usuarioId) {
+            window.location.href = 'login.html';
+            return;
+        }
+
+        const chaveConsentimento = `consentimentoAceito_${usuarioId}`;
+        const consentimentoAceito = localStorage.getItem(chaveConsentimento);
+
+        if (consentimentoAceito === 'true') {
+            window.location.href = 'app-paciente.html';
+        } else {
+            window.location.href = 'autorizacao.html';
+        }
+
     } else if (perfil === 'medico') {
         window.location.href = 'index.html';
     }

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Korasõ - Autorização de Dados</title>
+
+    <link rel="stylesheet" href="autorizacao.css">
+</head>
+
+<body>
+
+    <main class="phone">
+
+        <header class="cabecalho">
+            <div class="logo">Korasõ</div>
+
+            <h1>Autorização de Dados</h1>
+
+            <p>
+                Para utilizar o app, precisamos da sua autorização
+                para acessar e compartilhar alguns dos seus dados.
+            </p>
+        </header>
+
+        <section class="card informacoes">
+
+            <h2>Entenda o que será compartilhado</h2>
+
+            <article class="item">
+                <div class="icone">🛡️</div>
+
+                <div>
+                    <h3>Segurança e proteção</h3>
+                    <p>
+                        Seus dados ajudam a garantir uma experiência
+                        mais segura.
+                    </p>
+                </div>
+            </article>
+
+            <article class="item">
+                <div class="icone">💙</div>
+
+                <div>
+                    <h3>Saúde e bem-estar</h3>
+                    <p>
+                        Permite acompanhar seus indicadores e oferecer
+                        recomendações personalizadas.
+                    </p>
+                </div>
+            </article>
+
+            <article class="item">
+                <div class="icone">📋</div>
+
+                <div>
+                    <h3>Melhoria contínua</h3>
+                    <p>
+                        Utilizamos dados de forma anonimizada para
+                        melhorar nossos serviços.
+                    </p>
+                </div>
+            </article>
+
+        </section>
+
+        <section class="card consentimento">
+
+            <h2>Você autoriza o uso dos seus dados?</h2>
+
+            <p>
+                Ao continuar, você concorda com nossa
+                <a href="#">Política de Privacidade</a>
+                e com os
+                <a href="#">Termos de Uso</a>.
+            </p>
+
+            <label class="linha-aceite">
+
+                <label class="switch">
+                    <input type="checkbox" id="aceiteAutorizacao">
+                    <span class="slider"></span>
+                </label>
+
+                <span>
+                    Li e concordo com a
+                    <a href="#">Política de Privacidade</a>
+                    e com os
+                    <a href="#">Termos de Uso</a>.
+                </span>
+
+            </label>
+
+        </section>
+
+        <div class="acoes">
+
+            <button id="autorizar" class="btn-primario">
+                Autorizar e continuar
+            </button>
+
+            <button id="agoraNao" class="btn-secundario">
+                Agora não
+            </button>
+
+        </div>
+
+    </main>
+
+    <script src="autorizacao.js"></script>
+
+</body>
+</html>
