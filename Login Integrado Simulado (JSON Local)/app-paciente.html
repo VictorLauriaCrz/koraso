@@ -3,74 +3,225 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Korasõ - App Paciente</title>
-    <link rel="stylesheet" href="style.css">
-    <style>
-        .phone-body {
-            background: var(--cinza-fundo);
-            display: flex;
-            justify-content: center;
-            padding: 50px 20px;
-        }
-
-        .phone {
-            width: 320px;
-            min-height: 520px;
-            background: var(--branco);
-            border-radius: 30px;
-            border: 8px solid #222;
-            padding: 24px 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-            text-align: center;
-        }
-
-        .phone-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-
-        .phone-greeting {
-            color: var(--cinza-texto);
-            font-size: 13px;
-            margin-bottom: 16px;
-        }
-
-        .btn-sync {
-            width: 100%;
-            margin-top: 20px;
-        }
-
-        .status {
-            color: var(--cinza-texto);
-            margin-top: 32px;
-            font-size: 14px;
-        }
-    </style>
+    <title>Korasõ - Início</title>
+    <link rel="stylesheet" href="app-paciente.css">
 </head>
-<body class="phone-body">
-    <div class="phone">
-        <div class="phone-header">
-            <h2 style="color: var(--azul-atlassian); margin: 0;">Korasõ App</h2>
-            <button type="button" class="btn-logout" onclick="logout()">Sair</button>
-        </div>
-        <p class="phone-greeting" id="saudacao-paciente">Olá, beneficiário Unimed</p>
-        <p style="color: #666; font-size: 14px;">Mantenha seus dados atualizados para a sua próxima consulta na Unimed.</p>
+<body>
+    <main class="phone">
+        <div class="home-hero">
+            <header class="home-header">
+                <div class="home-topbar">
+                    <img
+                        class="home-logo"
+                        src="assets/logo-koraso.png"
+                        alt="Korasõ"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='grid';"
+                    >
+                    <div class="home-logo-fallback" style="display: none;" aria-hidden="true">K</div>
 
-        <div class="status" id="status">
-            <p>Seus dados do Google Health não foram enviados hoje.</p>
+                    <button type="button" class="btn-perfil" onclick="confirmarLogout()" aria-label="Perfil e sair">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <circle cx="12" cy="8" r="3.5"/>
+                            <path d="M5 19c1.5-3.5 4-5 7-5s5.5 1.5 7 5"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="home-greeting">
+                    <h1 id="saudacao-paciente">Olá</h1>
+                    <p>Tenha um ótimo dia!</p>
+                </div>
+                <hr class="home-divider">
+            </header>
+
+            <section class="calendar-card" aria-label="Calendário da semana">
+                <h2 id="calendar-month">—</h2>
+                <div class="calendar-week" id="calendar-week"></div>
+            </section>
         </div>
 
-        <button class="btn-sync btn-primary" id="btn-sync" onclick="enviarGoogle()">☁️ Sincronizar Google Health</button>
-    </div>
+        <div class="home-content">
+            <div class="consent-banner" id="consent-banner">
+                Compartilhamento não autorizado.
+                <a href="autorizacao.html">Revisar autorização</a>
+            </div>
+
+            <section class="features-block">
+                <div class="section-head">
+                    <h3>Funcionalidades Korasõ</h3>
+                    <p>Funcionalidades de Saúde mais populares</p>
+                </div>
+
+                <div class="features-carousel" id="features-carousel" aria-label="Carrossel de funcionalidades">
+                    <article class="feature-card">
+                        <div class="feature-icon" aria-hidden="true">
+                            <img src="assets/icon-smart-report.png" alt="">
+                        </div>
+                        <div class="feature-body">
+                            <div class="feature-text">
+                                <h4>Smart Report Médico</h4>
+                                <p>Consolide suas métricas cardiovasculares em um relatório inteligente para entregar ao seu médico antes da consulta.</p>
+                            </div>
+                            <button type="button" class="btn-feature" onclick="gerarRelatorio()">Gerar Relatório</button>
+                        </div>
+                    </article>
+
+                    <article class="feature-card">
+                        <div class="feature-icon" aria-hidden="true">
+                            <img src="assets/icon-smartwatch.png" alt="">
+                        </div>
+                        <div class="feature-body">
+                            <div class="feature-text">
+                                <h4>Sincronize seu Smartwatch</h4>
+                                <p>Utilize a tecnologia do smartwatch para sincronizar e acompanhar seus batimentos cardíacos e qualidade de sono.</p>
+                            </div>
+                            <button type="button" class="btn-feature" id="btn-sync" onclick="enviarGoogle()">Sincronizar</button>
+                        </div>
+                    </article>
+
+                    <article class="feature-card">
+                        <div class="feature-icon" aria-hidden="true">
+                            <img src="assets/icon-unimed.png" alt="">
+                        </div>
+                        <div class="feature-body">
+                            <div class="feature-text">
+                                <h4>Ecossistema Unimed</h4>
+                                <p>Acesse seus dados de beneficiário, valide sua carteirinha digital e sincronize suas informações com segurança.</p>
+                            </div>
+                            <button type="button" class="btn-feature" onclick="acessarDadosUnimed()">Acessar Dados</button>
+                        </div>
+                    </article>
+
+                    <article class="feature-card">
+                        <div class="feature-icon" aria-hidden="true">
+                            <img src="assets/icon-alerta.png" alt="">
+                        </div>
+                        <div class="feature-body">
+                            <div class="feature-text">
+                                <h4>Alerta Inteligente</h4>
+                                <p>Variação detectada: seu sono foi mais leve e os batimentos subiram esta semana. Tente descansar.</p>
+                            </div>
+                            <button type="button" class="btn-feature" onclick="verAlerta()">Saber Mais</button>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="carousel-dots" id="carousel-dots" aria-hidden="true">
+                    <span class="is-active"></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </section>
+
+            <div class="tips-wrap">
+                <article class="tips-card">
+                    <h4>Dicas de Saúde Korasõ</h4>
+                    <p>Hoje, tente fazer uma caminhada de 15 minutos após o jantar.</p>
+                    <button type="button" class="btn-feature" onclick="verDicas()">Ver Mais</button>
+                </article>
+            </div>
+        </div>
+
+        <div class="sync-toast" id="sync-toast" role="status"></div>
+
+        <nav class="bottom-nav" aria-label="Navegação principal">
+            <button type="button" class="nav-item is-active" aria-current="page">
+                <img src="assets/icon-inicio.png" alt="">
+                Início
+            </button>
+            <button type="button" class="nav-item" onclick="mostrarEmBreve('Pesquisa')" aria-label="Pesquisa">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <circle cx="11" cy="11" r="6.5"/>
+                    <path d="M16 16l4.5 4.5" stroke-linecap="round"/>
+                </svg>
+            </button>
+            <button type="button" class="nav-item" onclick="mostrarEmBreve('Gráfico')" aria-label="Gráfico">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <path d="M5 19V10M12 19V5M19 19v-7" stroke-linecap="round"/>
+                </svg>
+            </button>
+        </nav>
+    </main>
 
     <script src="auth.js"></script>
     <script>
     let pacienteId = null;
+    let pacienteNome = '';
+    let carteirinha = '';
+
+    const MESES = [
+        'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+        'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+    ];
+    const DIAS = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
+
+    function primeiroNome(nomeCompleto) {
+        return (nomeCompleto || 'beneficiário').trim().split(/\s+/)[0];
+    }
 
     function usuarioAutorizouDados(usuarioId) {
         return localStorage.getItem(`consentimentoAceito_${usuarioId}`) === 'true';
+    }
+
+    function mostrarToast(mensagem, erro = false) {
+        const toast = document.getElementById('sync-toast');
+        toast.textContent = mensagem;
+        toast.classList.toggle('is-error', erro);
+        toast.classList.add('is-visible');
+        clearTimeout(mostrarToast._timer);
+        mostrarToast._timer = setTimeout(() => {
+            toast.classList.remove('is-visible');
+        }, 3200);
+    }
+
+    function renderCalendar() {
+        const hoje = new Date();
+        const inicio = new Date(hoje);
+        inicio.setDate(hoje.getDate() - hoje.getDay());
+
+        document.getElementById('calendar-month').textContent =
+            `${MESES[hoje.getMonth()]} de ${hoje.getFullYear()}`;
+
+        const weekEl = document.getElementById('calendar-week');
+        weekEl.innerHTML = '';
+
+        for (let i = 0; i < 7; i++) {
+            const dia = new Date(inicio);
+            dia.setDate(inicio.getDate() + i);
+
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'calendar-day';
+            if (dia.toDateString() === hoje.toDateString()) {
+                btn.classList.add('is-selected');
+            }
+
+            btn.innerHTML = `
+                <span class="weekday">${DIAS[dia.getDay()]}</span>
+                <span class="date">${String(dia.getDate()).padStart(2, '0')}</span>
+            `;
+
+            btn.addEventListener('click', () => {
+                weekEl.querySelectorAll('.calendar-day').forEach((el) => el.classList.remove('is-selected'));
+                btn.classList.add('is-selected');
+            });
+
+            weekEl.appendChild(btn);
+        }
+    }
+
+    function setupCarouselDots() {
+        const carousel = document.getElementById('features-carousel');
+        const dots = document.querySelectorAll('#carousel-dots span');
+
+        carousel.addEventListener('scroll', () => {
+            const card = carousel.querySelector('.feature-card');
+            if (!card) return;
+            const cardWidth = card.offsetWidth + 14;
+            const index = Math.round(carousel.scrollLeft / cardWidth);
+            dots.forEach((dot, i) => dot.classList.toggle('is-active', i === index));
+        });
     }
 
     async function iniciarAppPaciente() {
@@ -78,36 +229,35 @@
         if (!sessao) return;
 
         pacienteId = sessao.usuario.id;
+        pacienteNome = sessao.usuario.nome;
+        carteirinha = sessao.usuario.carteirinha || sessao.usuario.id;
 
         document.getElementById('saudacao-paciente').textContent =
-            `Olá, ${sessao.usuario.nome}`;
+            `Olá, ${primeiroNome(pacienteNome)}`;
 
         const autorizou = usuarioAutorizouDados(pacienteId);
-        const btn = document.getElementById('btn-sync');
-        const status = document.getElementById('status');
+        document.getElementById('consent-banner').classList.toggle('is-visible', !autorizou);
 
-        if (!autorizou) {
-            btn.style.display = 'none';
+        renderCalendar();
+        setupCarouselDots();
+    }
 
-            status.innerHTML = `
-                <h3 style="color: #D93025;">Compartilhamento não autorizado</h3>
-                <p>Seus dados de saúde não serão sincronizados nem enviados ao médico.</p>
-                <button
-                    type="button"
-                    class="btn-primary"
-                    onclick="window.location.href='autorizacao.html'"
-                    style="margin-top: 16px;"
-                >
-                    Revisar autorização
-                </button>
-            `;
+    function confirmarLogout() {
+        if (confirm('Deseja sair da sua conta Korasõ?')) {
+            logout();
+        }
+    }
 
+    async function gerarRelatorio() {
+        if (!pacienteId) return;
+
+        if (!usuarioAutorizouDados(pacienteId)) {
+            alert('Autorize o compartilhamento de dados para gerar o Smart Report.');
+            window.location.href = 'autorizacao.html';
             return;
         }
 
-        status.innerHTML = `
-            <p>Seus dados do Google Health não foram enviados hoje.</p>
-        `;
+        window.open(`${API_BASE}/api/medico/paciente/${pacienteId}/pdf`, '_blank');
     }
 
     async function enviarGoogle() {
@@ -120,35 +270,54 @@
         }
 
         const btn = document.getElementById('btn-sync');
-        btn.textContent = '⏳ Sincronizando...';
+        btn.textContent = 'Sincronizando...';
         btn.disabled = true;
 
         try {
-            const resposta = await fetch(
-                `${API_BASE}/api/sincronizar/google/${pacienteId}`
-            );
+            const resposta = await fetch(`${API_BASE}/api/sincronizar/google/${pacienteId}`);
+            if (!resposta.ok) throw new Error('Falha na sincronização');
 
-            if (!resposta.ok) {
-                throw new Error('Não foi possível sincronizar os dados.');
-            }
-
-            document.getElementById('status').innerHTML = `
-                <h3 style="color: #00995D;">✅ Dados enviados com sucesso!</h3>
-                <p>Seu médico já tem acesso ao seu relatório.</p>
-            `;
-
-            btn.style.display = 'none';
-
+            mostrarToast('Dados sincronizados! Seu médico já pode ver o relatório.');
+            btn.textContent = 'Sincronizado';
         } catch (error) {
-            alert('Erro ao conectar com o servidor Korasõ.');
             console.error(error);
-
-            btn.textContent = '☁️ Sincronizar Google Health';
+            mostrarToast('Erro ao sincronizar. O servidor está rodando?', true);
+            btn.textContent = 'Sincronizar';
             btn.disabled = false;
         }
     }
 
+    function acessarDadosUnimed() {
+        alert(
+            `Dados do beneficiário\n\n` +
+            `Nome: ${pacienteNome}\n` +
+            `Carteirinha: ${carteirinha}\n\n` +
+            `Integração completa com o ecossistema Unimed em breve.`
+        );
+    }
+
+    function verAlerta() {
+        alert(
+            'Alerta Inteligente Korasõ\n\n' +
+            'Detectamos sono mais leve e batimentos um pouco mais altos nesta semana.\n\n' +
+            'Sugestão: priorize 7–8h de sono e evite cafeína no fim do dia.'
+        );
+    }
+
+    function verDicas() {
+        alert(
+            'Dicas de Saúde Korasõ\n\n' +
+            '1. Caminhada de 15 minutos após o jantar\n' +
+            '2. Beba água ao longo do dia\n' +
+            '3. Faça pausas de alongamento a cada 2 horas'
+        );
+    }
+
+    function mostrarEmBreve(nome) {
+        alert(`${nome}: em breve nesta versão do app.`);
+    }
+
     iniciarAppPaciente();
-</script>
+    </script>
 </body>
 </html>
