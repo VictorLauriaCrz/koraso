@@ -23,6 +23,22 @@
       "perfil": "medico",
       "nome": "Dr. João Santos",
       "crm": "CRM-54321"
+    },
+    {
+      "id": "88558",
+      "email": "gi.pereira@unimed.demo",
+      "senha": "koraso123",
+      "perfil": "paciente",
+      "nome": "Giovanna Rodrigues Pereira",
+      "carteirinha": "88558"
+    },
+    {
+      "id": "71091",
+      "email": "fulano.tal@unimed.demo",
+      "senha": "koraso123",
+      "perfil": "paciente",
+      "nome": "fulano de tal",
+      "carteirinha": "71091"
     }
   ]
 }
