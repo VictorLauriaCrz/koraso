@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Korasõ - App</title>
+    <link rel="stylesheet" href="custom.css">
+</head>
+
+<body>
+    <div class="app-container splash-screen">
+
+        <header class="status-bar">
+            <span class="time">9:41</span>
+            <div class="notch"></div>
+            <div class="icons">5G <span class="battery">🔋</span></div>
+        </header>
+
+        <!-- ========================================== -->
+        <!-- TELA 1: BOAS VINDAS                        -->
+        <!-- ========================================== -->
+        <div id="tela-boas-vindas" class="tela ativa">
+            <main class="logo-area main-center">
+                <div class="logo-placeholder">
+                    <img src="media/Group 62.svg" class="logo-koraso-home" alt="Logo">
+                    <h2 style="color: white; font-size: 50px; font-weight: lighter;">orasõ</h2>
+                </div>
+                <h1 class="welcome-text">Seja bem vindo a sua<br>Ponte de Dados Inteligente</h1>
+            </main>
+
+            <footer class="bottom-area">
+                <button id="btn-chamar-login" class="btn btn-primary">Entrar</button>
+                <button class="btn btn-secondary">Criar Conta</button>
+            </footer>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- TELA 2: LOGIN                              -->
+        <!-- ========================================== -->
+        <div id="tela-login" class="tela oculta">
+            <div class="login-header">
+                <h1 class="titulo-tela">Criar Conta</h1>
+                <h2 style="color: white; font-size: 30px; font-weight: lighter;">K</h2>
+            </div>
+
+            <form class="login-form">
+                <div class="input-group">
+                    <label>Nome</label>
+                    <input type="text" autocomplete="off">
+                </div>
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" autocomplete="off">
+                </div>
+                <div class="input-group">
+                    <label>Senha</label>
+                    <input type="password">
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-primary" id="btn-entrar-dashboard">Entrar</button>
+                    <p class="texto-ou">OU</p>
+                    <button type="button" class="btn btn-secondary btn-unimed">Entrar Conta Unimed</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- TELA 3: AUTORIZAÇÃO DE DADOS (LGPD)        -->
+        <!-- ========================================== -->
+        <div id="tela-autorizacao" class="tela oculta scroll-area">
+            <main class="auth-area">
+                <div class="logo-placeholder-small">
+                    <h2 style="color: white; font-size: 40px; font-weight: lighter;">Korasõ</h2>
+                </div>
+
+                <h1 class="auth-title">Autorização de Dados</h1>
+                <p class="auth-subtitle">Para utilizar o app, precisamos da sua autorização para acessar e compartilhar
+                    alguns dos seus dados.</p>
+
+                <div class="info-card">
+                    <h3 class="card-title">Entenda o que será compartilhado</h3>
+                    <div class="info-item">
+                        <div class="icon-box">🛡️</div>
+                        <div class="info-text">
+                            <h4>Segurança e proteção</h4>
+                            <p>Seus dados ajudam a garantir uma experiência mais segura.</p>
+                        </div>
+                    </div>
+                    <hr class="divider">
+                    <div class="info-item">
+                        <div class="icon-box">❤️</div>
+                        <div class="info-text">
+                            <h4>Saúde e bem-estar</h4>
+                            <p>Permite acompanhar seus indicadores e oferecer recomendações personalizadas.</p>
+                        </div>
+                    </div>
+                    <hr class="divider">
+                    <div class="info-item">
+                        <div class="icon-box">📄</div>
+                        <div class="info-text">
+                            <h4>Melhoria contínua</h4>
+                            <p>Usamos dados de forma anonimizada para melhorar nossos serviços.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <h3 class="card-title">Você autoriza o uso dos seus dados?</h3>
+                    <p class="terms-text">Ao continuar, você concorda com nossa <a href="#">Política de Privacidade</a>
+                        e <a href="#">Termos de Uso</a>.</p>
+                    <div class="toggle-container">
+                        <label class="switch">
+                            <input type="checkbox" id="aceite-termos">
+                            <span class="slider round"></span>
+                        </label>
+                        <p class="toggle-label">Li e concordo com a <a href="#">Política de Privacidade</a> e com os <a
+                                href="#">Termos de Uso</a>.</p>
+                    </div>
+                </div>
+
+                <div class="form-actions auth-actions">
+                    <button type="button" class="btn btn-primary" id="btn-autorizar">Autorizar e continuar</button>
+                    <button type="button" class="btn btn-secondary">Agora não</button>
+                </div>
+            </main>
+        </div>
+
+        <div class="home-indicator-container">
+            <div class="home-indicator"></div>
+        </div>
+
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+
+</html>
