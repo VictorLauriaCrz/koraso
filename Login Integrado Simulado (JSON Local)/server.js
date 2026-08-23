@@ -4,6 +4,7 @@ const fs = require('fs');
 const crypto = require('crypto');
 const path = require('path');
 const PDFDocument = require('pdfkit');
+const { registrarLeitura, gerarSmartReport, formatarData } = require('./smart-report');
 
 const app = express();
 app.use(cors());
@@ -165,19 +166,33 @@ app.get('/api/auth/pacientes', (req, res) => {
 // 1. Rota de Sincronização (POST) - Simulando o Relógio enviando dados
 app.post('/api/sincronizar', (req, res) => {
     const { paciente_id, nome, bpm_repouso, passos_diarios, horas_sono } = req.body;
-    const novoRelatorio = {
-        paciente_id, nome, bpm_repouso, passos_diarios, horas_sono,
+    const leitura = {
+        paciente_id,
+        nome,
+        bpm_repouso,
+        passos_diarios,
+        horas_sono,
         data_sincronizacao: new Date().toISOString(),
     };
-    databaseKoraso[paciente_id] = novoRelatorio;
-    return res.status(201).json({ message: 'Sincronizado.', dados: novoRelatorio });
+    databaseKoraso[paciente_id] = registrarLeitura(databaseKoraso[paciente_id], leitura);
+    return res.status(201).json({ message: 'Sincronizado.', dados: databaseKoraso[paciente_id] });
 });
 
 // 2. Rota de Consulta (GET) - O que o Médico e o Paciente leem
 app.get('/api/medico/paciente/:id', (req, res) => {
     const relatorio = databaseKoraso[req.params.id];
     if (!relatorio) return res.status(404).json({ error: 'Não encontrado' });
-    return res.status(200).json({ dados: relatorio });
+    return res.status(200).json({
+        dados: relatorio,
+        smart_report: gerarSmartReport(relatorio),
+    });
+});
+
+// 2b. Smart Report em JSON (visão clínica consolidada)
+app.get('/api/medico/paciente/:id/smart-report', (req, res) => {
+    const relatorio = databaseKoraso[req.params.id];
+    if (!relatorio) return res.status(404).json({ error: 'Não encontrado' });
+    return res.status(200).json({ smart_report: gerarSmartReport(relatorio) });
 });
 
 // 3. Rota do Google Health (GET) - A Ponte Korasõ buscando dados na nuvem
@@ -189,17 +204,17 @@ app.get('/api/sincronizar/google/:id', (req, res) => {
 
     const pacienteJson = usuarios.find((u) => u.id === pacienteId && u.perfil === 'paciente');
 
-    const pacienteAtualizado = {
+    const leitura = {
         paciente_id: pacienteId,
         nome: pacienteExiste?.nome || pacienteJson?.nome || 'Paciente Via Google Health',
         passos_diarios: dadosGoogle.passos_diarios,
         horas_sono: pacienteExiste ? pacienteExiste.horas_sono : 7.5,
         bpm_repouso: pacienteExiste ? pacienteExiste.bpm_repouso : 72,
-        data_sincronizacao: new Date().toISOString()
+        data_sincronizacao: new Date().toISOString(),
     };
 
-    databaseKoraso[pacienteId] = pacienteAtualizado;
-    return res.status(200).json({ message: 'Dados da nuvem integrados!', dados: pacienteAtualizado });
+    databaseKoraso[pacienteId] = registrarLeitura(pacienteExiste, leitura);
+    return res.status(200).json({ message: 'Dados da nuvem integrados!', dados: databaseKoraso[pacienteId] });
 });
 
 // 4. Rota do Smart Report (PDF) - O diferencial clínico
@@ -207,25 +222,97 @@ app.get('/api/medico/paciente/:id/pdf', (req, res) => {
     const paciente = databaseKoraso[req.params.id];
     if (!paciente) return res.status(404).send('Paciente não encontrado');
 
+    const report = gerarSmartReport(paciente);
+
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `inline; filename=report-${paciente.paciente_id}.pdf`);
+    res.setHeader('Content-Disposition', `inline; filename=smart-report-${paciente.paciente_id}.pdf`);
 
     const doc = new PDFDocument({ size: 'A4', margin: 50 });
     doc.pipe(res);
 
-    doc.fillColor('#0052CC').font('Helvetica-Bold').fontSize(25).text('Korasõ Smart Report', 50, 50);
-    doc.fillColor('#444').fontSize(12).text('Relatório de Saúde Cardiovascular Preventiva', 50, 80);
-    doc.moveTo(50, 100).lineTo(550, 100).stroke('#DFE1E6');
+    doc.fillColor('#0052CC').font('Helvetica-Bold').fontSize(22).text('Korasõ Smart Report Médico', 50, 50);
+    doc.fillColor('#5E6C84').font('Helvetica').fontSize(11)
+        .text('Relatório inteligente de saúde cardiovascular preventiva', 50, 78);
+    doc.moveTo(50, 98).lineTo(550, 98).strokeColor('#DFE1E6').stroke();
 
-    doc.fillColor('#172B4D').fontSize(14).text(`Paciente: ${paciente.nome}`, 50, 130);
-    doc.text(`ID Unimed: #${paciente.paciente_id}`, 50, 150);
+    let y = 120;
+    doc.fillColor('#172B4D').font('Helvetica-Bold').fontSize(13).text('Identificação', 50, y);
+    y += 22;
+    doc.font('Helvetica').fontSize(11)
+        .text(`Paciente: ${report.nome}`, 50, y)
+        .text(`ID Unimed: #${report.paciente_id}`, 300, y);
+    y += 18;
+    doc.text(`Gerado em: ${formatarData(report.gerado_em)}`, 50, y);
+    y += 16;
+    doc.text(`Última sincronização: ${formatarData(report.data_ultima_sincronizacao)}`, 50, y);
+    y += 16;
+    doc.text(`Leituras no histórico: ${report.leituras_disponiveis}`, 50, y);
 
-    doc.text('Indicadores Recentes:', 50, 190);
-    doc.fontSize(12).text(`• Batimentos: ${paciente.bpm_repouso} BPM`, 70, 210);
-    doc.text(`• Passos: ${paciente.passos_diarios}`, 70, 230);
-    doc.text(`• Sono: ${paciente.horas_sono} horas`, 70, 250);
+    y += 28;
+    doc.font('Helvetica-Bold').fontSize(13).text('Indicadores atuais', 50, y);
+    y += 20;
+    doc.font('Helvetica').fontSize(11);
+    const ind = report.indicadores;
+    doc.text(`• BPM de repouso: ${ind.bpm_repouso.valor} BPM (${ind.bpm_repouso.status})`, 60, y); y += 16;
+    doc.text(`• Passos diários: ${ind.passos_diarios.valor} (${ind.passos_diarios.status})`, 60, y); y += 16;
+    doc.text(`• Horas de sono: ${ind.horas_sono.valor} h (${ind.horas_sono.status})`, 60, y);
 
-    doc.fontSize(10).fillColor('#5E6C84').text('Documento gerado para apoio à decisão clínica. PGHD (Patient Generated Health Data).', 50, 750, { align: 'center' });
+    y += 28;
+    doc.font('Helvetica-Bold').fontSize(13).text('Resumo clínico preventivo', 50, y);
+    y += 18;
+    doc.font('Helvetica').fontSize(11).fillColor('#172B4D')
+        .text(report.resumo_clinico, 50, y, { width: 500 });
+    y = doc.y + 16;
+
+    doc.font('Helvetica-Bold').fontSize(13).text('Tendências e padrão individual', 50, y);
+    y = doc.y + 12;
+    doc.font('Helvetica').fontSize(11);
+    if (!report.tendencias.length) {
+        doc.fillColor('#5E6C84').text('Histórico ainda insuficiente para comparar com o padrão individual. Novas sincronizações enriquecerão esta seção.', 50, y, { width: 500 });
+        y = doc.y + 12;
+    } else {
+        report.tendencias.forEach((t) => {
+            doc.fillColor('#172B4D').text(`• ${t.texto}`, 60, y, { width: 480 });
+            y = doc.y + 6;
+        });
+    }
+
+    y += 10;
+    doc.fillColor('#172B4D').font('Helvetica-Bold').fontSize(13).text('Alertas preventivos', 50, y);
+    y = doc.y + 12;
+    doc.font('Helvetica').fontSize(11);
+    if (!report.alertas.length) {
+        doc.fillColor('#36B37E').text('Nenhum alerta preventivo no momento.', 60, y);
+        y = doc.y + 12;
+    } else {
+        report.alertas.forEach((a) => {
+            doc.fillColor(a.nivel === 'atencao' ? '#FF5630' : '#FF8B00').text(`• [${a.nivel}] ${a.texto}`, 60, y, { width: 480 });
+            y = doc.y + 6;
+        });
+    }
+
+    if (y > 680) {
+        doc.addPage();
+        y = 50;
+    } else {
+        y += 16;
+    }
+
+    doc.fillColor('#172B4D').font('Helvetica-Bold').fontSize(13).text('Histórico recente', 50, y);
+    y = doc.y + 12;
+    doc.font('Helvetica').fontSize(10).fillColor('#5E6C84');
+    report.historico.slice(-7).reverse().forEach((h) => {
+        doc.text(
+            `${h.data_formatada}  |  BPM ${h.bpm_repouso}  |  ${h.passos_diarios} passos  |  ${h.horas_sono} h sono`,
+            50,
+            y,
+            { width: 500 }
+        );
+        y = doc.y + 4;
+    });
+
+    doc.fontSize(9).fillColor('#5E6C84')
+        .text(report.aviso_legal, 50, 750, { align: 'center', width: 500 });
 
     doc.end();
 });

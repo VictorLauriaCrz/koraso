@@ -19,6 +19,10 @@ function limparSessao() {
     localStorage.removeItem(SESSION_KEY);
 }
 
+function paginaLoginPorPerfil(perfil) {
+    return perfil === 'medico' ? 'login-medico.html' : 'login.html';
+}
+
 function redirecionarPorPerfil(perfil) {
     if (perfil === 'paciente') {
         const sessao = obterSessao();
@@ -37,7 +41,6 @@ function redirecionarPorPerfil(perfil) {
         } else {
             window.location.href = 'autorizacao.html';
         }
-
     } else if (perfil === 'medico') {
         window.location.href = 'index.html';
     }
@@ -53,16 +56,17 @@ async function validarTokenRemoto(token) {
 }
 
 async function verificarSessao(perfilEsperado) {
+    const destinoLogin = paginaLoginPorPerfil(perfilEsperado || 'paciente');
     const sessao = obterSessao();
     if (!sessao?.token) {
-        window.location.href = 'login.html';
+        window.location.href = destinoLogin;
         return null;
     }
 
     const usuario = await validarTokenRemoto(sessao.token);
     if (!usuario) {
         limparSessao();
-        window.location.href = 'login.html';
+        window.location.href = destinoLogin;
         return null;
     }
 
@@ -75,8 +79,9 @@ async function verificarSessao(perfilEsperado) {
     return { token: sessao.token, usuario };
 }
 
-async function logout() {
+async function logout(destino) {
     const sessao = obterSessao();
+    const perfil = sessao?.usuario?.perfil;
     if (sessao?.token) {
         try {
             await fetch(`${API_BASE}/api/auth/logout`, {
@@ -88,7 +93,7 @@ async function logout() {
         }
     }
     limparSessao();
-    window.location.href = 'login.html';
+    window.location.href = destino || paginaLoginPorPerfil(perfil);
 }
 
 async function listarPacientes() {

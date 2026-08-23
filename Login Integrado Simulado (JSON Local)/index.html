@@ -3,67 +3,611 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Korasõ Médico</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Korasõ Médico | Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="medico.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
-<body>
-    <div class="container" id="app">
-        <div class="loading" id="mensagem-carregando"></div>
+<body class="medico-app">
+    <div class="shell">
+        <aside class="sidebar" aria-label="Navegação médica">
+            <div class="sidebar__brand">
+                <img src="assets/logo-koraso.png" alt="Korasõ">
+                <span>Korasõ</span>
+            </div>
 
-        <div id="painel-medico" style="display: none;">
-            <div class="header">
+            <div class="sidebar__user">
+                <div class="avatar" id="avatar-medico">JS</div>
                 <div>
-                    <h2>Korasõ Dashboard</h2>
-                    <p class="medico-nome" id="nome-medico"></p>
-                </div>
-                <div class="header-actions">
-                    <label class="select-paciente-label" for="select-paciente">Paciente:</label>
-                    <select id="select-paciente" class="select-paciente" onchange="trocarPaciente()"></select>
-                    <button onclick="gerarPDF()" class="btn-success">
-                        📄 Gerar Smart Report
-                    </button>
-                    <button id="btn-atualizar" onclick="carregarDadosPaciente()" class="btn-primary">
-                        🔄 Atualizar Dados
-                    </button>
-                    <button type="button" class="btn-logout" onclick="logout()">Sair</button>
+                    <small>Médico</small>
+                    <strong id="nome-medico">—</strong>
                 </div>
             </div>
 
-            <div class="paciente-info">
-                <h1 id="nome-paciente">Carregando Nome...</h1>
-                <p>Status: <strong style="color: #00995D;">Sincronizado com o App do Paciente</strong></p>
-                <small>Última atualização: <span id="data-hora"></span></small>
+            <nav class="sidebar__nav">
+                <a class="nav-item is-active" href="#dashboard">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 13h6V4H4v9zm0 7h6v-5H4v5zm10 0h6V11h-6v9zm0-18v6h6V2h-6z"/></svg>
+                    Dashboard
+                </a>
+                <a class="nav-item" href="#pacientes">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    Pacientes
+                </a>
+                <a class="nav-item" href="#smart-report">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg>
+                    Relatórios
+                </a>
+                <a class="nav-item" href="#alertas">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+                    Alertas
+                </a>
+                <a class="nav-item" href="#dispositivos">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M12 18h.01"/></svg>
+                    Dispositivos
+                </a>
+                <button type="button" class="nav-item" onclick="logoutMedico()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg>
+                    Sair
+                </button>
+            </nav>
+
+            <div class="sidebar__lgpd">
+                <span>🛡</span>
+                <p>Seus dados estão protegidos — LGPD Compliant</p>
+            </div>
+        </aside>
+
+        <main class="main" id="dashboard">
+            <header class="topbar">
+                <div class="topbar__patient">
+                    <label for="select-paciente">Paciente:</label>
+                    <select id="select-paciente" onchange="trocarPaciente()"></select>
+                </div>
+                <div class="topbar__actions">
+                    <button type="button" class="btn btn-green" onclick="gerarPDF()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+                        Gerar Smart Report
+                    </button>
+                    <button type="button" class="btn btn-blue" id="btn-atualizar" onclick="carregarDadosPaciente()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg>
+                        Atualizar Dados
+                    </button>
+                </div>
+            </header>
+
+            <div id="mensagem-carregando" class="loading-state">
+                Carregando painel médico...
             </div>
 
-            <div class="dashboard">
-                <div class="card">
-                    <h3>BPM de Repouso</h3>
-                    <div class="valor" id="bpm-valor">--</div>
-                    <p>bpm</p>
-                </div>
-                <div class="card">
-                    <h3>Passos (Média Diária)</h3>
-                    <div class="valor" id="passos-valor">--</div>
-                    <p>passos</p>
-                </div>
-                <div class="card">
-                    <h3>Horas de Sono</h3>
-                    <div class="valor" id="sono-valor">--</div>
-                    <p>horas</p>
-                </div>
+            <div id="painel-medico" style="display: none;">
+                <section class="card patient-hero" id="pacientes">
+                    <div class="avatar avatar--lg" id="avatar-paciente">MS</div>
+                    <div class="patient-hero__identity">
+                        <h1 id="nome-paciente">Paciente</h1>
+                        <div class="patient-hero__meta">
+                            <span id="id-paciente">#—</span>
+                            <span class="badge badge-ok" id="status-sync">Sincronizado com o App</span>
+                        </div>
+                        <dl class="patient-hero__grid">
+                            <div><dt>Idade</dt><dd id="meta-idade">—</dd></div>
+                            <div><dt>Sexo</dt><dd id="meta-sexo">—</dd></div>
+                            <div><dt>Condição</dt><dd id="meta-condicao">—</dd></div>
+                            <div><dt>Última consulta</dt><dd id="meta-ultima">—</dd></div>
+                            <div><dt>Próxima consulta</dt><dd id="meta-proxima">—</dd></div>
+                            <div><dt>Médico responsável</dt><dd id="meta-medico">—</dd></div>
+                        </dl>
+                    </div>
+                </section>
+
+                <section class="metrics">
+                    <article class="card metric-card">
+                        <div class="metric-card__icon heart" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7-4.4-9.5-8.2C.5 9.5 2.2 6 5.5 6c1.9 0 3.2 1.1 3.9 2.2C10.1 7.1 11.4 6 13.3 6c3.3 0 5 3.5 3 6.8C19 16.6 12 21 12 21z"/></svg>
+                        </div>
+                        <h3>BPM de Repouso</h3>
+                        <div class="valor"><span id="bpm-valor">--</span> <span>bpm</span></div>
+                        <span class="badge" id="bpm-badge">—</span>
+                    </article>
+                    <article class="card metric-card">
+                        <div class="metric-card__icon steps" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 17c2 0 3-3 5-3s3 3 5 3 3-3 5-3"/><path d="M7 10c1-2 2-4 5-4s4 2 5 4"/></svg>
+                        </div>
+                        <h3>Passos (Média Diária)</h3>
+                        <div class="valor"><span id="passos-valor">--</span> <span>passos</span></div>
+                        <span class="badge" id="passos-badge">—</span>
+                    </article>
+                    <article class="card metric-card">
+                        <div class="metric-card__icon sleep" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 14.5A8.5 8.5 0 1 1 9.5 3 7 7 0 0 0 21 14.5z"/></svg>
+                        </div>
+                        <h3>Horas de Sono</h3>
+                        <div class="valor"><span id="sono-valor">--</span> <span>horas</span></div>
+                        <span class="badge" id="sono-badge">—</span>
+                    </article>
+                </section>
+
+                <section class="grid-2">
+                    <article class="card">
+                        <div class="card__header">
+                            <div>
+                                <h2>Evolução dos Indicadores</h2>
+                                <p>Tendência longitudinal do paciente</p>
+                            </div>
+                            <div class="period-tabs" role="tablist">
+                                <button type="button" class="is-active" data-periodo="7">7 dias</button>
+                                <button type="button" data-periodo="30">30 dias</button>
+                                <button type="button" data-periodo="90">3 meses</button>
+                            </div>
+                        </div>
+                        <div class="chart-wrap">
+                            <canvas id="chart-indicadores"></canvas>
+                        </div>
+                        <div class="chart-legend">
+                            <span class="leg-bpm">BPM</span>
+                            <span class="leg-passos">Passos</span>
+                            <span class="leg-sono">Sono</span>
+                        </div>
+                        <button type="button" class="btn-ghost" style="margin-top:10px" onclick="document.getElementById('smart-report').scrollIntoView({behavior:'smooth'})">
+                            Ver todos os indicadores →
+                        </button>
+                    </article>
+
+                    <article class="card" id="alertas">
+                        <div class="card__header">
+                            <div>
+                                <h2>Alertas Preventivos</h2>
+                                <p>Pontos de atenção para a consulta</p>
+                            </div>
+                        </div>
+                        <ul class="alerts-list" id="lista-alertas"></ul>
+                        <div class="alert-footer" id="alertas-footer">Nenhum alerta crítico no momento</div>
+                    </article>
+                </section>
+
+                <section class="grid-2">
+                    <article class="card" id="smart-report">
+                        <div class="card__header">
+                            <div>
+                                <h2>Smart Report Médico</h2>
+                                <p>Consolidado preventivo antes da consulta</p>
+                            </div>
+                            <span class="badge badge-info" id="smart-report-leituras">0 leituras</span>
+                        </div>
+                        <p class="smart-resumo" id="smart-report-resumo">Aguardando dados...</p>
+                        <div class="smart-split">
+                            <div>
+                                <h3>Tendências</h3>
+                                <ul id="smart-report-tendencias"></ul>
+                            </div>
+                            <div>
+                                <h3>Pontos de Atenção</h3>
+                                <ul id="smart-report-alertas"></ul>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-outline" style="margin-top:16px" onclick="gerarPDF()">
+                            Ver relatório completo
+                        </button>
+                        <p class="legal-note" id="smart-report-legal"></p>
+                    </article>
+
+                    <article class="card" id="dispositivos">
+                        <div class="card__header">
+                            <div>
+                                <h2>Dispositivos e Fontes de Dados</h2>
+                                <p>Origem da coleta passiva</p>
+                            </div>
+                        </div>
+                        <ul class="devices-list">
+                            <li class="device-item">
+                                <div>
+                                    <strong>Galaxy Watch 7</strong>
+                                    <small>Wearable · BPM e sono</small>
+                                </div>
+                                <span class="badge badge-ok">Conectado</span>
+                            </li>
+                            <li class="device-item">
+                                <div>
+                                    <strong>Google Health</strong>
+                                    <small>Sincronização simulada Korasõ</small>
+                                </div>
+                                <span class="badge badge-info">Sincronizado</span>
+                            </li>
+                            <li class="device-item">
+                                <div>
+                                    <strong>Conta Unimed</strong>
+                                    <small>Identidade do beneficiário</small>
+                                </div>
+                                <span class="badge badge-ok">Conectado</span>
+                            </li>
+                        </ul>
+                        <p class="legal-note">Última atualização: <span id="data-hora">—</span></p>
+                    </article>
+                </section>
+
+                <section class="grid-2">
+                    <article class="card">
+                        <div class="card__header">
+                            <div>
+                                <h2>Histórico do Paciente</h2>
+                                <p>Eventos recentes da jornada</p>
+                            </div>
+                        </div>
+                        <ul class="timeline" id="timeline-paciente"></ul>
+                    </article>
+
+                    <article class="card">
+                        <div class="card__header">
+                            <div>
+                                <h2>Anotações Clínicas</h2>
+                                <p>Registros do médico responsável</p>
+                            </div>
+                        </div>
+                        <div id="lista-anotacoes"></div>
+                        <form class="note-form" id="form-anotacao">
+                            <textarea id="nova-anotacao" placeholder="Ex.: Acompanhar evolução da frequência cardíaca durante o sono." required></textarea>
+                            <button type="submit" class="btn btn-outline">+ Adicionar anotação</button>
+                        </form>
+                    </article>
+                </section>
+
+                <section class="card" style="margin-top:16px">
+                    <div class="card__header">
+                        <div>
+                            <h2>Relatórios Anteriores</h2>
+                            <p>Snapshots gerados a partir do histórico</p>
+                        </div>
+                    </div>
+                    <div class="table-wrap">
+                        <table class="reports-table">
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Resumo</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabela-relatorios"></tbody>
+                        </table>
+                    </div>
+                </section>
             </div>
-        </div>
+        </main>
     </div>
 
     <script src="auth.js"></script>
     <script>
         let pacienteId = null;
+        let chartIndicadores = null;
+        let ultimoReport = null;
+        let periodoAtual = 7;
+
+        const META_PACIENTES = {
+            '12345': {
+                idade: '45 anos',
+                sexo: 'Feminino',
+                condicao: 'Hipertensão',
+                ultima: '10/08/2026',
+                proxima: '10/09/2026',
+                iniciais: 'MS',
+            },
+            '67890': {
+                idade: '52 anos',
+                sexo: 'Masculino',
+                condicao: 'Risco cardiovascular',
+                ultima: '02/08/2026',
+                proxima: '02/09/2026',
+                iniciais: 'CS',
+            },
+        };
+
+        function iniciais(nome) {
+            return (nome || 'M')
+                .split(/\s+/)
+                .filter(Boolean)
+                .slice(0, 2)
+                .map((p) => p[0]?.toUpperCase() || '')
+                .join('') || 'MD';
+        }
+
+        function statusBadge(el, texto, tipo) {
+            el.textContent = texto;
+            el.className = `badge badge-${tipo}`;
+        }
+
+        function badgeParaIndicador(chave, valor) {
+            if (chave === 'bpm') {
+                if (valor > 90) return ['Atenção', 'danger'];
+                if (valor >= 60 && valor <= 80) return ['Normal', 'ok'];
+                return ['Observar', 'warn'];
+            }
+            if (chave === 'passos') {
+                if (valor >= 7000) return ['Dentro da meta', 'info'];
+                if (valor >= 5000) return ['Quase na meta', 'warn'];
+                return ['Abaixo da meta', 'danger'];
+            }
+            if (chave === 'sono') {
+                if (valor >= 7) return ['Bom', 'ok'];
+                if (valor >= 6) return ['Regular', 'warn'];
+                return ['Insuficiente', 'danger'];
+            }
+            return ['—', 'info'];
+        }
+
+        function logoutMedico() {
+            logout('login-medico.html');
+        }
+
+        function gerarPDF() {
+            if (!pacienteId) return;
+            window.open(`${API_BASE}/api/medico/paciente/${pacienteId}/pdf`, '_blank');
+        }
+
+        function carregarAnotacoes() {
+            const key = `koraso_anotacoes_${pacienteId}`;
+            const lista = JSON.parse(localStorage.getItem(key) || '[]');
+            const box = document.getElementById('lista-anotacoes');
+            box.innerHTML = '';
+
+            if (!lista.length) {
+                box.innerHTML = `
+                    <div class="note-box">
+                        <small>Sugestão clínica</small>
+                        <p>Acompanhar evolução da frequência cardíaca durante o sono.</p>
+                    </div>`;
+                return;
+            }
+
+            lista.slice().reverse().forEach((nota) => {
+                const div = document.createElement('div');
+                div.className = 'note-box';
+                div.innerHTML = `<small>${nota.data}</small><p>${nota.texto}</p>`;
+                box.appendChild(div);
+            });
+        }
+
+        function renderTimeline(report, paciente) {
+            const ul = document.getElementById('timeline-paciente');
+            ul.innerHTML = '';
+            const eventos = [];
+
+            if (paciente?.data_sincronizacao) {
+                eventos.push({
+                    titulo: 'Sincronização de dados do app',
+                    data: new Date(paciente.data_sincronizacao).toLocaleString('pt-BR'),
+                });
+            }
+
+            (report?.historico || []).slice(-4).reverse().forEach((h, idx) => {
+                eventos.push({
+                    titulo: idx === 0 ? 'Leitura mais recente registrada' : 'Leitura histórica registrada',
+                    data: h.data_formatada || h.data_sincronizacao,
+                });
+            });
+
+            if (report?.alertas?.length) {
+                eventos.unshift({
+                    titulo: `${report.alertas.length} alerta(s) preventivo(s) identificados`,
+                    data: 'Smart Report atual',
+                });
+            }
+
+            if (!eventos.length) {
+                ul.innerHTML = '<li><strong>Sem eventos ainda</strong><small>Aguardando sincronização do paciente</small></li>';
+                return;
+            }
+
+            eventos.slice(0, 6).forEach((e) => {
+                const li = document.createElement('li');
+                li.innerHTML = `<strong>${e.titulo}</strong><small>${e.data}</small>`;
+                ul.appendChild(li);
+            });
+        }
+
+        function renderRelatorios(report) {
+            const tbody = document.getElementById('tabela-relatorios');
+            tbody.innerHTML = '';
+            const hist = (report?.historico || []).slice().reverse();
+
+            if (!hist.length) {
+                tbody.innerHTML = '<tr><td colspan="4">Nenhum relatório anterior.</td></tr>';
+                return;
+            }
+
+            hist.slice(0, 5).forEach((h, idx) => {
+                const status = h.bpm_repouso > 90 || h.horas_sono < 6 || h.passos_diarios < 5000
+                    ? ['Atenção', 'danger']
+                    : ['Estável', 'ok'];
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${h.data_formatada || '—'}</td>
+                    <td>BPM ${h.bpm_repouso} · ${h.passos_diarios} passos · ${h.horas_sono}h sono</td>
+                    <td><span class="badge badge-${status[1]}">${status[0]}</span></td>
+                    <td><button type="button" class="btn-ghost" onclick="gerarPDF()">Visualizar</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderAlertas(report) {
+            const ul = document.getElementById('lista-alertas');
+            const footer = document.getElementById('alertas-footer');
+            ul.innerHTML = '';
+
+            const alertas = report?.alertas || [];
+            if (!alertas.length) {
+                ul.innerHTML = `
+                    <li class="alert-item">
+                        <div>
+                            <strong>Indicadores estáveis</strong>
+                            <p>Nenhum desvio preventivo relevante no momento.</p>
+                        </div>
+                    </li>`;
+                footer.textContent = 'Nenhum alerta crítico no momento';
+                return;
+            }
+
+            alertas.slice(0, 4).forEach((a) => {
+                const li = document.createElement('li');
+                li.className = `alert-item alert-item--${a.nivel === 'atencao' ? 'danger' : 'warn'}`;
+                li.innerHTML = `
+                    <div>
+                        <strong>${a.nivel === 'atencao' ? 'Atenção preventiva' : 'Desvio do padrão'}</strong>
+                        <p>${a.texto}</p>
+                    </div>`;
+                ul.appendChild(li);
+            });
+
+            const criticos = alertas.filter((a) => a.nivel === 'atencao').length;
+            footer.textContent = criticos
+                ? `${criticos} ponto(s) de atenção para discutir na consulta`
+                : 'Nenhum alerta crítico no momento';
+        }
+
+        function renderSmartReport(report) {
+            ultimoReport = report;
+            if (!report) return;
+
+            document.getElementById('smart-report-leituras').textContent =
+                `${report.leituras_disponiveis} leitura${report.leituras_disponiveis === 1 ? '' : 's'}`;
+            document.getElementById('smart-report-resumo').textContent = report.resumo_clinico;
+            document.getElementById('smart-report-legal').textContent = report.aviso_legal;
+
+            const ulT = document.getElementById('smart-report-tendencias');
+            ulT.innerHTML = '';
+            if (!report.tendencias.length) {
+                ulT.innerHTML = '<li class="muted">Histórico ainda insuficiente para tendência individual.</li>';
+            } else {
+                report.tendencias.forEach((t) => {
+                    const li = document.createElement('li');
+                    li.textContent = t.texto;
+                    ulT.appendChild(li);
+                });
+            }
+
+            const ulA = document.getElementById('smart-report-alertas');
+            ulA.innerHTML = '';
+            if (!report.alertas.length) {
+                ulA.innerHTML = '<li class="muted">Sem pontos de atenção no momento.</li>';
+            } else {
+                report.alertas.forEach((a) => {
+                    const li = document.createElement('li');
+                    li.className = 'attention';
+                    li.textContent = a.texto;
+                    ulA.appendChild(li);
+                });
+            }
+
+            renderAlertas(report);
+            renderTimeline(report, { data_sincronizacao: report.data_ultima_sincronizacao });
+            renderRelatorios(report);
+            atualizarGrafico(report);
+        }
+
+        function gerarSerieDemo(report, dias) {
+            const hist = report?.historico || [];
+            if (hist.length >= 2) {
+                return hist.slice(-Math.min(dias, hist.length)).map((h) => ({
+                    label: (h.data_formatada || '').split(',')[0] || '—',
+                    bpm: h.bpm_repouso,
+                    passos: h.passos_diarios,
+                    sono: h.horas_sono,
+                }));
+            }
+
+            const baseBpm = report?.indicadores?.bpm_repouso?.valor ?? 72;
+            const basePassos = report?.indicadores?.passos_diarios?.valor ?? 7000;
+            const baseSono = report?.indicadores?.horas_sono?.valor ?? 7;
+            const pontos = Math.min(dias, 7);
+            const serie = [];
+            for (let i = pontos - 1; i >= 0; i--) {
+                const d = new Date();
+                d.setDate(d.getDate() - i);
+                serie.push({
+                    label: d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }),
+                    bpm: Math.round(baseBpm + (Math.sin(i) * 3)),
+                    passos: Math.round(basePassos + (Math.cos(i) * 400)),
+                    sono: Number((baseSono + (Math.sin(i / 2) * 0.3)).toFixed(1)),
+                });
+            }
+            return serie;
+        }
+
+        function atualizarGrafico(report) {
+            const serie = gerarSerieDemo(report, periodoAtual);
+            const ctx = document.getElementById('chart-indicadores');
+            const data = {
+                labels: serie.map((s) => s.label),
+                datasets: [
+                    {
+                        label: 'BPM',
+                        data: serie.map((s) => s.bpm),
+                        borderColor: '#E5533D',
+                        backgroundColor: 'rgba(229,83,61,0.1)',
+                        tension: 0.35,
+                        yAxisID: 'y',
+                    },
+                    {
+                        label: 'Passos',
+                        data: serie.map((s) => s.passos),
+                        borderColor: '#0B4F9C',
+                        backgroundColor: 'rgba(11,79,156,0.08)',
+                        tension: 0.35,
+                        yAxisID: 'y1',
+                    },
+                    {
+                        label: 'Sono (h)',
+                        data: serie.map((s) => s.sono),
+                        borderColor: '#7B61FF',
+                        backgroundColor: 'rgba(123,97,255,0.08)',
+                        tension: 0.35,
+                        yAxisID: 'y',
+                    },
+                ],
+            };
+
+            if (chartIndicadores) {
+                chartIndicadores.data = data;
+                chartIndicadores.update();
+                return;
+            }
+
+            chartIndicadores = new Chart(ctx, {
+                type: 'line',
+                data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: {
+                            position: 'left',
+                            grid: { color: '#EEF2F6' },
+                            ticks: { color: '#617284' },
+                        },
+                        y1: {
+                            position: 'right',
+                            grid: { drawOnChartArea: false },
+                            ticks: { color: '#617284' },
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: '#617284' },
+                        },
+                    },
+                },
+            });
+        }
 
         async function iniciarDashboardMedico() {
             const sessao = await verificarSessao('medico');
             if (!sessao) return;
 
             document.getElementById('nome-medico').textContent = sessao.usuario.nome;
+            document.getElementById('avatar-medico').textContent = iniciais(sessao.usuario.nome);
+            document.getElementById('meta-medico').textContent = sessao.usuario.nome;
 
             const pacientes = await listarPacientes();
             const select = document.getElementById('select-paciente');
@@ -72,7 +616,7 @@
             pacientes.forEach((paciente) => {
                 const option = document.createElement('option');
                 option.value = paciente.id;
-                option.textContent = `${paciente.nome} (#${paciente.carteirinha})`;
+                option.textContent = `${paciente.nome} (#${paciente.carteirinha || paciente.id})`;
                 select.appendChild(option);
             });
 
@@ -93,63 +637,91 @@
 
         async function carregarDadosPaciente() {
             if (!pacienteId) return;
-
             const btnHeader = document.getElementById('btn-atualizar');
-            if (btnHeader) btnHeader.textContent = '⏳ Buscando...';
+            if (btnHeader) btnHeader.disabled = true;
 
             try {
                 const resposta = await fetch(`${API_BASE}/api/medico/paciente/${pacienteId}`);
+                if (!resposta.ok) throw new Error('Paciente não encontrado');
 
-                if (!resposta.ok) {
-                    throw new Error('Paciente não encontrado');
-                }
-
-                const respostaCompleta = await resposta.json();
-                const paciente = respostaCompleta.dados;
+                const payload = await resposta.json();
+                const paciente = payload.dados;
+                const report = payload.smart_report;
+                const meta = META_PACIENTES[pacienteId] || {
+                    idade: '—',
+                    sexo: '—',
+                    condicao: 'Acompanhamento preventivo',
+                    ultima: '—',
+                    proxima: '—',
+                    iniciais: iniciais(paciente.nome),
+                };
 
                 document.getElementById('mensagem-carregando').style.display = 'none';
                 document.getElementById('painel-medico').style.display = 'block';
 
-                document.getElementById('nome-paciente').innerText = `Paciente: ${paciente.nome}`;
-                document.getElementById('bpm-valor').innerText = paciente.bpm_repouso;
-                document.getElementById('passos-valor').innerText = paciente.passos_diarios;
-                document.getElementById('sono-valor').innerText = paciente.horas_sono;
+                document.getElementById('nome-paciente').textContent = paciente.nome;
+                document.getElementById('id-paciente').textContent = `#${paciente.paciente_id}`;
+                document.getElementById('avatar-paciente').textContent = meta.iniciais;
+                document.getElementById('meta-idade').textContent = meta.idade;
+                document.getElementById('meta-sexo').textContent = meta.sexo;
+                document.getElementById('meta-condicao').textContent = meta.condicao;
+                document.getElementById('meta-ultima').textContent = meta.ultima;
+                document.getElementById('meta-proxima').textContent = meta.proxima;
 
-                const dataFormatada = new Date(paciente.data_sincronizacao || Date.now()).toLocaleDateString('pt-BR', {
-                    day: '2-digit', month: '2-digit', year: 'numeric',
-                    hour: '2-digit', minute: '2-digit', second: '2-digit',
-                });
-                document.getElementById('data-hora').innerText = dataFormatada;
+                document.getElementById('bpm-valor').textContent = paciente.bpm_repouso;
+                document.getElementById('passos-valor').textContent = paciente.passos_diarios;
+                document.getElementById('sono-valor').textContent = paciente.horas_sono;
 
-                const bpmEl = document.getElementById('bpm-valor');
-                if (paciente.bpm_repouso > 90) {
-                    bpmEl.style.color = 'red';
-                } else {
-                    bpmEl.style.color = '#00995D';
-                }
+                const [bpmTxt, bpmTipo] = badgeParaIndicador('bpm', paciente.bpm_repouso);
+                const [passosTxt, passosTipo] = badgeParaIndicador('passos', paciente.passos_diarios);
+                const [sonoTxt, sonoTipo] = badgeParaIndicador('sono', paciente.horas_sono);
+                statusBadge(document.getElementById('bpm-badge'), bpmTxt, bpmTipo);
+                statusBadge(document.getElementById('passos-badge'), passosTxt, passosTipo);
+                statusBadge(document.getElementById('sono-badge'), sonoTxt, sonoTipo);
 
-                if (btnHeader) btnHeader.textContent = '🔄 Atualizar Dados';
+                document.getElementById('data-hora').textContent = new Date(
+                    paciente.data_sincronizacao || Date.now()
+                ).toLocaleString('pt-BR');
+
+                renderSmartReport(report);
+                carregarAnotacoes();
             } catch (error) {
-                console.error('Erro ao carregar dashboard:', error);
-
+                console.error(error);
                 document.getElementById('painel-medico').style.display = 'none';
                 document.getElementById('mensagem-carregando').style.display = 'block';
-
                 document.getElementById('mensagem-carregando').innerHTML = `
-                    <div class="loading-actions">
-                        <p>Aguardando o paciente enviar os dados pelo aplicativo...</p>
-                        <button onclick="carregarDadosPaciente()" class="btn-primary">
-                            🔄 Verificar Novamente
-                        </button>
-                    </div>
+                    <p>Aguardando o paciente enviar os dados pelo aplicativo...</p>
+                    <button type="button" class="btn btn-blue" onclick="carregarDadosPaciente()">Verificar Novamente</button>
                 `;
+            } finally {
+                if (btnHeader) btnHeader.disabled = false;
             }
         }
 
-        function gerarPDF() {
+        document.querySelectorAll('.period-tabs button').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.period-tabs button').forEach((b) => b.classList.remove('is-active'));
+                btn.classList.add('is-active');
+                periodoAtual = Number(btn.dataset.periodo);
+                if (ultimoReport) atualizarGrafico(ultimoReport);
+            });
+        });
+
+        document.getElementById('form-anotacao').addEventListener('submit', (event) => {
+            event.preventDefault();
             if (!pacienteId) return;
-            window.open(`${API_BASE}/api/medico/paciente/${pacienteId}/pdf`, '_blank');
-        }
+            const texto = document.getElementById('nova-anotacao').value.trim();
+            if (!texto) return;
+            const key = `koraso_anotacoes_${pacienteId}`;
+            const lista = JSON.parse(localStorage.getItem(key) || '[]');
+            lista.push({
+                texto,
+                data: new Date().toLocaleString('pt-BR'),
+            });
+            localStorage.setItem(key, JSON.stringify(lista));
+            document.getElementById('nova-anotacao').value = '';
+            carregarAnotacoes();
+        });
 
         iniciarDashboardMedico();
     </script>

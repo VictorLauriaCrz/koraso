@@ -451,3 +451,110 @@ body {
     color: #5F6C7B;
     font-size: 18px;
 }
+
+/* Smart Report Médico */
+.smart-report {
+    margin-top: 30px;
+    background: var(--branco);
+    border-radius: 12px;
+    padding: 28px 30px;
+    box-shadow: 0 4px 10px rgba(9, 30, 66, 0.04);
+}
+
+.smart-report__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.smart-report__header h2 {
+    color: var(--azul-atlassian);
+    font-size: 1.35rem;
+    margin-bottom: 6px;
+}
+
+.smart-report__subtitle {
+    color: var(--cinza-texto);
+    font-size: 0.92rem;
+    line-height: 1.4;
+}
+
+.smart-report__badge {
+    background: #DEEBFF;
+    color: var(--azul-atlassian);
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
+.smart-report__resumo {
+    background: #F4F5F7;
+    border-left: 4px solid var(--azul-atlassian);
+    padding: 14px 16px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 20px;
+    line-height: 1.5;
+    font-weight: 600;
+}
+
+.smart-report__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 18px;
+}
+
+.smart-report__panel {
+    border: 1px solid #DFE1E6;
+    border-radius: 10px;
+    padding: 16px 18px;
+}
+
+.smart-report__panel h3 {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--cinza-texto);
+    margin-bottom: 12px;
+}
+
+.smart-report__list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.smart-report__list li {
+    font-size: 0.92rem;
+    line-height: 1.45;
+    color: var(--azul-marinho);
+}
+
+.smart-report__list li.muted {
+    color: var(--cinza-texto);
+}
+
+.smart-report__list li.ok {
+    color: var(--verde-sucesso);
+    font-weight: 600;
+}
+
+.smart-report__list li.alerta {
+    color: var(--vermelho-alerta);
+    font-weight: 600;
+}
+
+.smart-report__list li.desvio {
+    color: #FF8B00;
+    font-weight: 600;
+}
+
+.smart-report__legal {
+    margin-top: 18px;
+    font-size: 0.78rem;
+    color: var(--cinza-texto);
+}

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Korasõ | Acesso Médico</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="login-medico.css">
+</head>
+<body class="medico-login-body">
+    <div class="medico-login">
+        <section class="medico-login__brand" aria-label="Apresentação Korasõ Unimed">
+            <div class="medico-login__logos">
+                <img src="assets/logo-koraso.png" alt="Korasõ" class="logo-koraso">
+                <span class="logo-divider" aria-hidden="true"></span>
+                <img src="assets/logo-unimed.jpeg" alt="Unimed" class="logo-unimed">
+            </div>
+
+            <p class="medico-login__tagline">Parceria que conecta dados, tecnologia e cuidado.</p>
+
+            <h1 class="medico-login__title">
+                Inteligência clínica para decisões que
+                <span>transformam vidas.</span>
+            </h1>
+
+            <p class="medico-login__lead">
+                Acompanhe indicadores de saúde dos seus pacientes, identifique riscos
+                e ofereça um cuidado cada vez mais preventivo e eficiente.
+            </p>
+
+            <ul class="medico-login__features">
+                <li>
+                    <span class="feature-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V5M4 19h16M8 16l3-4 2 2 4-6"/></svg>
+                    </span>
+                    <div>
+                        <strong>Dados integrados</strong>
+                        <p>Informações consolidadas de diversas fontes em um só lugar.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="feature-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+                    </span>
+                    <div>
+                        <strong>Segurança e conformidade</strong>
+                        <p>Seus dados e os dados dos pacientes protegidos com criptografia e LGPD.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="feature-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12h4l2-5 4 10 2-5h6"/></svg>
+                    </span>
+                    <div>
+                        <strong>Decisões mais assertivas</strong>
+                        <p>Insights inteligentes para um cuidado cada vez mais preventivo.</p>
+                    </div>
+                </li>
+            </ul>
+
+            <div class="medico-login__lgpd">
+                <span aria-hidden="true">✓</span>
+                Plataforma em conformidade com a LGPD. Seus dados e os dados dos pacientes estão protegidos.
+            </div>
+        </section>
+
+        <section class="medico-login__panel">
+            <form class="medico-login__card" id="form-login-medico">
+                <div class="medico-login__card-icon" aria-hidden="true">
+                    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="24" cy="16" r="7"/>
+                        <path d="M10 40c2-8 8-12 14-12s12 4 14 12"/>
+                        <path d="M32 18h8M36 14v8"/>
+                    </svg>
+                </div>
+
+                <h2>Acesso Médico</h2>
+                <p class="medico-login__subtitle">Korasõ | Unimed Dashboard</p>
+                <p class="medico-login__exclusive">Acesso exclusivo para profissionais de saúde da Unimed.</p>
+
+                <label class="field">
+                    <span>E-mail corporativo Unimed</span>
+                    <div class="field__control">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 7 9-7"/></svg>
+                        <input type="email" id="email" name="email" placeholder="Digite seu e-mail corporativo" autocomplete="username" required>
+                    </div>
+                </label>
+
+                <label class="field">
+                    <span>Senha</span>
+                    <div class="field__control">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+                        <input type="password" id="senha" name="senha" placeholder="Digite sua senha" autocomplete="current-password" required>
+                        <button type="button" class="field__toggle" id="toggle-senha" aria-label="Mostrar senha">👁</button>
+                    </div>
+                </label>
+
+                <div class="medico-login__row">
+                    <label class="check">
+                        <input type="checkbox" id="manter-conectado">
+                        <span>Manter conectado</span>
+                    </label>
+                    <button type="button" class="link-forgot" id="btn-esqueci">Esqueci minha senha</button>
+                </div>
+
+                <p class="medico-login__error" id="login-erro" hidden></p>
+
+                <button type="submit" class="btn-entrar" id="btn-entrar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M10 17l5-5-5-5M15 12H3"/><path d="M21 3v18"/></svg>
+                    Entrar
+                </button>
+
+                <div class="medico-login__ou"><span>ou</span></div>
+
+                <button type="button" class="btn-sso" id="btn-sso">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3l8 4v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V7l8-4z"/><path d="m9 12 2 2 4-4"/></svg>
+                    Acessar com autenticação corporativa (SSO)
+                </button>
+
+                <div class="medico-login__terms">
+                    <span aria-hidden="true">ⓘ</span>
+                    <p>Ao acessar, você concorda com as <strong>Políticas de Privacidade</strong> e <strong>Termos de Uso</strong> da Korasõ e da Unimed.</p>
+                </div>
+
+                <p class="medico-login__demo">
+                    Demo: <strong>joao.medico@unimed.demo</strong> / <strong>koraso123</strong>
+                </p>
+            </form>
+
+            <p class="medico-login__footer">Korasõ e Unimed cuidam juntos da saúde de milhares de pessoas.</p>
+            <p class="medico-login__patient-link">É paciente? <a href="login.html">Acesse o app Korasõ</a></p>
+        </section>
+    </div>
+
+    <script src="auth.js"></script>
+    <script>
+        const emailEl = document.getElementById('email');
+        const senhaEl = document.getElementById('senha');
+        const erroEl = document.getElementById('login-erro');
+        const btnEntrar = document.getElementById('btn-entrar');
+
+        document.getElementById('toggle-senha').addEventListener('click', () => {
+            const isPass = senhaEl.type === 'password';
+            senhaEl.type = isPass ? 'text' : 'password';
+        });
+
+        document.getElementById('btn-esqueci').addEventListener('click', () => {
+            erroEl.textContent = 'Na demonstração acadêmica, use joao.medico@unimed.demo / koraso123.';
+            erroEl.hidden = false;
+            erroEl.classList.add('is-info');
+        });
+
+        document.getElementById('btn-sso').addEventListener('click', async () => {
+            const btn = document.getElementById('btn-sso');
+            const original = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = 'Conectando ao SSO Unimed...';
+            await new Promise((r) => setTimeout(r, 800));
+            emailEl.value = 'joao.medico@unimed.demo';
+            senhaEl.value = 'koraso123';
+            btn.disabled = false;
+            btn.innerHTML = original.includes('SSO')
+                ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3l8 4v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V7l8-4z"/><path d="m9 12 2 2 4-4"/></svg> Acessar com autenticação corporativa (SSO)'
+                : original;
+            erroEl.textContent = 'SSO Unimed simulado: credenciais preenchidas. Clique em Entrar.';
+            erroEl.hidden = false;
+            erroEl.classList.add('is-info');
+        });
+
+        document.getElementById('form-login-medico').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            erroEl.hidden = true;
+            erroEl.classList.remove('is-info');
+            btnEntrar.disabled = true;
+            const texto = btnEntrar.innerHTML;
+            btnEntrar.textContent = 'Entrando...';
+
+            try {
+                const resposta = await fetch(`${API_BASE}/api/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: emailEl.value.trim(),
+                        senha: senhaEl.value,
+                    }),
+                });
+                const dados = await resposta.json();
+
+                if (!resposta.ok) {
+                    erroEl.textContent = dados.error || 'Credenciais inválidas.';
+                    erroEl.hidden = false;
+                    return;
+                }
+
+                if (dados.usuario.perfil !== 'medico') {
+                    erroEl.textContent = 'Este portal é exclusivo para médicos. Pacientes devem usar o app Korasõ.';
+                    erroEl.hidden = false;
+                    return;
+                }
+
+                if (document.getElementById('manter-conectado').checked) {
+                    localStorage.setItem('koraso_manter_medico', 'true');
+                }
+
+                salvarSessao(dados.token, dados.usuario);
+                window.location.href = 'index.html';
+            } catch {
+                erroEl.textContent = 'Erro ao conectar com o servidor. Verifique se node server.js está rodando.';
+                erroEl.hidden = false;
+            } finally {
+                btnEntrar.disabled = false;
+                btnEntrar.innerHTML = texto;
+            }
+        });
+
+        (async function iniciar() {
+            const sessao = obterSessao();
+            if (!sessao?.token) return;
+            const usuario = await validarTokenRemoto(sessao.token);
+            if (usuario?.perfil === 'medico') {
+                window.location.href = 'index.html';
+            }
+        })();
+    </script>
+</body>
+</html>
