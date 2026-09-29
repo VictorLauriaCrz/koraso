@@ -1,15 +1,7 @@
-<p align="center">
-  <img src="assets/logo-koraso.png" alt="Logo Korasõ" width="280">
-</p>
+
 
 <h1 align="center">Korasõ 🫀</h1>
 <p align="center"><i>A ponte entre os dados diários do paciente e o cuidado médico contínuo</i></p>
-
-<p align="center">
-  <img src="assets/banner-koraso.png" alt="Identidade visual do Korasõ — tela de login do app" width="720">
-</p>
-
-<img src="assets/wave-top.svg" alt="" width="100%">
 
 Uma ponte de dados inteligente que conecta a rotina física do paciente (smartwatch/celular) ao prontuário médico da Unimed, unindo coleta contínua de dados, inteligência artificial e prevenção cardiovascular.
 
