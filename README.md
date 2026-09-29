@@ -1,4 +1,15 @@
-# Korasõ 🫀 | Inteligência de Dados para Saúde Preventiva
+<p align="center">
+  <img src="assets/logo-koraso.png" alt="Logo Korasõ" width="280">
+</p>
+
+<h1 align="center">Korasõ 🫀</h1>
+<p align="center"><i>A ponte entre os dados diários do paciente e o cuidado médico contínuo</i></p>
+
+<p align="center">
+  <img src="assets/banner-koraso.png" alt="Identidade visual do Korasõ — tela de login do app" width="720">
+</p>
+
+<img src="assets/wave-top.svg" alt="" width="100%">
 
 Uma ponte de dados inteligente que conecta a rotina física do paciente (smartwatch/celular) ao prontuário médico da Unimed, unindo coleta contínua de dados, inteligência artificial e prevenção cardiovascular.
 
@@ -83,10 +94,16 @@ Este projeto foi desenvolvido pela equipe:
 
 * **Victor Lauria** — *Product Owner (PO) & Fullstack Developer* *(Concepção da solução e desenvolvimento fullstack, com foco na tela do paciente; responsável por toda a estrutura de back-end da integração com a Gemini API)*
 
-* **Giovanna Rodrigues Pereira** — *Project Manager, Fullstack Developer & Market Analyst* *(Desenvolvimento fullstack com foco na tela do médico e no front-end da integração com a Gemini API; benchmarking de mercado e estruturação do roadmap ágil)*
+* **Giovanna Rodrigues Pereira** — *Fullstack Developer & Market Analyst* *(Desenvolvimento fullstack com foco na tela do médico e no front-end da integração com a Gemini API; benchmarking de mercado e estruturação do roadmap ágil)*
 
 * **Rodrigo Farias Lima** — *Business Analyst* *(Responsável pelo valor de mercado da solução e por toda a pesquisa do problema que fundamenta o projeto)*
 
 * **Júlia Leal Benevides Gomes** — *Data & Research Analyst* *(Estruturação do pipeline de dados, levantamento de estatísticas e validação do impacto da hiperpersonalização)*
 
 * **Yannie Yshin Kang** — *Brand & UX/UI Designer* *(Responsável por toda a identidade visual e o design da plataforma, além da estruturação do Pitch Deck)*
+
+<br>
+
+<img src="assets/wave-bottom.svg" alt="" width="100%">
+
+<p align="center"><sub>Korasõ · Inteligência clínica para decisões que transformam vidas</sub></p>
